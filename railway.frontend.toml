@@ -1,0 +1,13 @@
+[build]
+builder = "dockerfile"
+dockerfilePath = "frontend.Dockerfile"
+
+[deploy]
+startCommand = "node serve.js"
+healthcheckPath = "/health"
+healthcheckTimeout = 300
+restartPolicyType = "ON_FAILURE"
+
+[variables]
+NODE_ENV = "production"
+PORT = "3000"
