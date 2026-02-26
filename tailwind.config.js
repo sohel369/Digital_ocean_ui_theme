@@ -8,19 +8,19 @@ export default {
         extend: {
             colors: {
                 primary: {
-                    DEFAULT: "#3B82F6", // Blue 500
-                    dark: "#2563EB",    // Blue 600
-                    light: "#60A5FA",   // Blue 400
+                    DEFAULT: "#e11d48", // Rose 600
+                    dark: "#be123c",    // Rose 700
+                    light: "#f43f5e",   // Rose 500
                 },
                 secondary: "#64748b",
                 accent: {
-                    DEFAULT: "#3B82F6", // Changed to Blue for consistency
-                    light: "#60A5FA",
-                    dark: "#2563EB",
+                    DEFAULT: "#e11d48", // Rose 600
+                    light: "#f43f5e",
+                    dark: "#be123c",
                 },
                 success: {
-                    DEFAULT: "#3B82F6", // Blue 500
-                    light: "#60A5FA",   // Blue 400
+                    DEFAULT: "#10B981", // Emerald 500
+                    light: "#34D399",   // Emerald 400
                 },
                 warning: {
                     DEFAULT: "#D97706", // Rich Amber

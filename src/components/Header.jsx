@@ -218,7 +218,7 @@ const Header = ({ isPublic = false }) => {
     // ─────────────────────────────────────────
     return (
         <header className="sticky top-0 z-50 w-full flex flex-col transition-all duration-300">
-            <div className="h-20 w-full px-6 md:px-12 flex items-center justify-between border-b border-white/5 backdrop-blur-3xl bg-background/90 transition-all">
+            <div className="h-20 w-full px-6 md:px-12 flex items-center justify-between border-b border-white/5 backdrop-blur-3xl bg-[#08090f]/90 transition-all">
 
                 {/* Left Section */}
                 <div className="flex items-center gap-6 md:gap-10">
@@ -229,8 +229,8 @@ const Header = ({ isPublic = false }) => {
                                 {(user?.role?.toLowerCase() === 'admin' || user?.role?.toLowerCase() === 'country_admin') ? 'Admin Panel' : 'Dashboard'}
                             </p>
                             <div className="flex items-center gap-2 mt-1">
-                                <span className="flex items-center gap-1 text-[9px] font-bold text-blue-400 uppercase tracking-widest leading-none">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+                                <span className="flex items-center gap-1 text-[9px] font-bold text-rose-400 uppercase tracking-widest leading-none">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
                                     {currentCountryName}
                                 </span>
                             </div>

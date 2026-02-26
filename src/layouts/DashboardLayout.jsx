@@ -23,7 +23,9 @@ const DashboardLayout = () => {
     }
 
     return (
-        <div className="flex min-h-screen bg-background selection:bg-primary/30 selection:text-primary-light overflow-x-hidden">
+        <div className="flex min-h-screen bg-black selection:bg-rose-500/30 selection:text-white overflow-hidden relative">
+            {/* Global Background Glow to match public design */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[600px] bg-rose-900/10 blur-[120px] rounded-full z-0 pointer-events-none"></div>
             <Sidebar />
             <div className="flex-1 flex flex-col min-w-0 max-w-full ml-0 md:ml-72 transition-all duration-300 overflow-x-hidden">
                 <Header isPublic={false} />

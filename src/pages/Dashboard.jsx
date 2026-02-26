@@ -30,7 +30,7 @@ const StatCard = ({ title, value, subtext, icon: Icon, trend, colorClass = 'blue
 
         <div className="relative glass-panel p-6 rounded-[2rem] border border-white/5 bg-slate-900/40 backdrop-blur-2xl flex flex-col h-full hover:border-white/10 transition-all duration-300">
             <div className="flex justify-between items-start mb-6">
-                <div className="p-3 rounded-2xl bg-blue-500/10 text-blue-400 group-hover:scale-110 transition-transform duration-300">
+                <div className="p-3 rounded-2xl bg-rose-500/10 text-rose-400 group-hover:scale-110 transition-transform duration-300">
                     <Icon size={24} />
                 </div>
                 <div className="h-10 w-24">
@@ -38,14 +38,14 @@ const StatCard = ({ title, value, subtext, icon: Icon, trend, colorClass = 'blue
                         <AreaChart data={sparklineData}>
                             <defs>
                                 <linearGradient id={`grad-${title.replace(/\s+/g, '')}`} x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stopColor="#3B82F6" stopOpacity={0.4} />
-                                    <stop offset="100%" stopColor="#3B82F6" stopOpacity={0} />
+                                    <stop offset="0%" stopColor="#e11d48" stopOpacity={0.4} />
+                                    <stop offset="100%" stopColor="#e11d48" stopOpacity={0} />
                                 </linearGradient>
                             </defs>
                             <Area
                                 type="monotone"
                                 dataKey="v"
-                                stroke="#3B82F6"
+                                stroke="#e11d48"
                                 strokeWidth={2.5}
                                 fill={`url(#grad-${title.replace(/\s+/g, '')})`}
                                 dot={false}
@@ -192,7 +192,7 @@ const Dashboard = () => {
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 w-full">
                 <div className="space-y-1">
                     <h1 className="text-3xl md:text-5xl font-black text-white tracking-tighter uppercase italic leading-none">
-                        {t('dashboard.title')} <span className="text-primary drop-shadow-[0_0_15px_rgba(59,130,246,0.3)]">{t('dashboard.subtitle')}</span>
+                        {t('dashboard.title')} <span className="text-primary drop-shadow-[0_0_15px_rgba(225,29,72,0.3)]">{t('dashboard.subtitle')}</span>
                     </h1>
                     <p className="text-slate-400 font-bold text-xs md:text-sm uppercase tracking-widest pl-1">
                         {t('dashboard.monitoring', { count: activeCampaignsCount })}
@@ -221,7 +221,7 @@ const Dashboard = () => {
                         </button>
 
                         {/* New Campaign CTA */}
-                        <Link to="/campaigns/new" className="premium-btn flex-1 sm:w-56 h-[52px] rounded-2xl text-[10px] sm:text-xs md:text-sm italic font-black flex items-center justify-center gap-2.5 shadow-[0_10px_25px_-5px_rgba(59,130,246,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all shrink-0">
+                        <Link to="/campaigns/new" className="premium-btn flex-1 sm:w-56 h-[52px] rounded-2xl text-[10px] sm:text-xs md:text-sm italic font-black flex items-center justify-center gap-2.5 shadow-[0_10px_25px_-5px_rgba(225,29,72,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all shrink-0">
                             <div className="bg-white/20 p-1 rounded-lg">
                                 <Plus size={16} strokeWidth={3} />
                             </div>
@@ -273,7 +273,7 @@ const Dashboard = () => {
                         <h2 className="text-xl font-bold text-white flex items-center gap-2">
                             {t('dashboard.recent_campaigns')} <span className="text-primary font-black">{t('dashboard.recent_campaigns_sub')}</span>
                         </h2>
-                        <Link to="/campaigns" className="text-xs font-black text-blue-500 hover:text-blue-400 flex items-center gap-1.5 transition-all group/view bg-blue-500/5 px-3 py-1.5 rounded-xl border border-blue-500/10">
+                        <Link to="/campaigns" className="text-xs font-black text-rose-500 hover:text-rose-400 flex items-center gap-1.5 transition-all group/view bg-rose-500/5 px-3 py-1.5 rounded-xl border border-rose-500/10">
                             {t('common.view_all')} <ChevronRight size={14} className="group-hover/view:translate-x-1 transition-transform" />
                         </Link>
                     </div>
@@ -318,8 +318,8 @@ const Dashboard = () => {
                                             <td className="px-6 py-5">
                                                 <div className="flex items-center gap-2">
                                                     {camp.status === 'live' || camp.status === 'active' || camp.status === 'approved' ? (
-                                                        <span className="flex items-center gap-1.5 px-3 py-1 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-full text-[9px] font-black uppercase tracking-widest italic">
-                                                            <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse shrink-0" />
+                                                        <span className="flex items-center gap-1.5 px-3 py-1 bg-rose-500/10 text-rose-400 border border-rose-500/20 rounded-full text-[9px] font-black uppercase tracking-widest italic">
+                                                            <div className="w-1.5 h-1.5 bg-rose-500 rounded-full animate-pulse shrink-0" />
                                                             LIVE
                                                         </span>
                                                     ) : camp.status === 'pending_review' || camp.status === 'submitted' ? (
@@ -378,7 +378,7 @@ const Dashboard = () => {
                                     </div>
                                     <div className="shrink-0">
                                         {camp.status === 'live' || camp.status === 'active' || camp.status === 'approved' ? (
-                                            <div className="w-2.5 h-2.5 bg-blue-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
+                                            <div className="w-2.5 h-2.5 bg-rose-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(225,29,72,0.5)]" />
                                         ) : camp.status === 'pending_review' || camp.status === 'submitted' ? (
                                             <Clock size={16} className="text-amber-500" />
                                         ) : (
