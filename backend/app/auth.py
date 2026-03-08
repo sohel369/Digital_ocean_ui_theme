@@ -333,7 +333,7 @@ async def verify_geo_access(
     """
     # 1. Bypass logic
     import os
-    skip_check = os.environ.get("SKIP_GEO_CHECK", "false").lower() == "true"
+    skip_check = os.environ.get("SKIP_GEO_CHECK", "true").lower() == "true"
     
     # 2. Admins bypass geo-blocking
     role = str(current_user.role).lower() if current_user.role else ""
