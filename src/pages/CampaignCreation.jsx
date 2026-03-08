@@ -360,9 +360,9 @@ const CampaignCreation = () => {
                                     <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-0.5">{t('geo.coverage_area')}</p>
                                 </div>
                             </div>
-                            <Link to="/geo-targeting" className="group flex items-center gap-2 px-4 py-2 bg-rose-500/10 hover:bg-rose-500 hover:text-white border border-rose-500/30 rounded-xl transition-all shadow-lg shadow-rose-500/5">
-                                <span className="text-[10px] font-black uppercase tracking-widest text-rose-500 group-hover:text-white">Edit in Geo Targeting</span>
-                                <ChevronRight size={14} className="group-hover:translate-x-0.5 transition-transform text-rose-500 group-hover:text-white" />
+                            <Link to="/geo-targeting" className="group flex items-center gap-2 px-4 py-2 bg-blue-500/10 hover:bg-blue-500 hover:text-white border border-blue-500/30 rounded-xl transition-all shadow-lg shadow-blue-500/5">
+                                <span className="text-[10px] font-black uppercase tracking-widest text-blue-500 group-hover:text-white">Edit in Geo Targeting</span>
+                                <ChevronRight size={14} className="group-hover:translate-x-0.5 transition-transform text-blue-500 group-hover:text-white" />
                             </Link>
                         </div>
 
@@ -636,13 +636,13 @@ const CampaignCreation = () => {
                                                     const dur = parseInt(formData.duration || '3');
                                                     if (dur === 12) return (
                                                         <div className="flex flex-col items-end gap-1">
-                                                            <span className="text-[9px] bg-blue-500/10 text-blue-400 px-2.5 py-1 rounded-md border border-blue-500/20 font-black tracking-tighter shadow-[0_0_10px_rgba(225,29,72,0.1)]">50% DISCOUNT RECEIVED</span>
+                                                            <span className="text-[9px] bg-blue-500/10 text-blue-400 px-2.5 py-1 rounded-md border border-blue-500/20 font-black tracking-tighter shadow-[0_0_10px_rgba(59,130,246,0.1)]">50% DISCOUNT RECEIVED</span>
                                                             <span className="text-[8px] text-slate-500 italic">Total cost divided by 12 installments</span>
                                                         </div>
                                                     );
                                                     if (dur === 6) return (
                                                         <div className="flex flex-col items-end gap-1">
-                                                            <span className="text-[9px] bg-blue-500/10 text-blue-400 px-2.5 py-1 rounded-md border border-blue-500/20 font-black tracking-tighter shadow-[0_0_10px_rgba(225,29,72,0.1)]">25% DISCOUNT RECEIVED</span>
+                                                            <span className="text-[9px] bg-blue-500/10 text-blue-400 px-2.5 py-1 rounded-md border border-blue-500/20 font-black tracking-tighter shadow-[0_0_10px_rgba(59,130,246,0.1)]">25% DISCOUNT RECEIVED</span>
                                                             <span className="text-[8px] text-slate-500 italic">Total cost divided by 6 installments</span>
                                                         </div>
                                                     );
@@ -724,10 +724,10 @@ const CampaignCreation = () => {
 
                                 {/* Step 1 */}
                                 <div className="relative z-10 flex flex-col items-center gap-2">
-                                    <div className="w-10 h-10 rounded-full bg-rose-500 flex items-center justify-center text-white shadow-lg shadow-rose-500/20">
+                                    <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
                                         <CheckCircle2 size={20} />
                                     </div>
-                                    <span className="text-[9px] font-black text-rose-400 uppercase tracking-tighter">Submit</span>
+                                    <span className="text-[9px] font-black text-blue-400 uppercase tracking-tighter">Submit</span>
                                 </div>
 
                                 {/* Step 2 */}

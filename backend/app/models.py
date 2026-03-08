@@ -71,6 +71,7 @@ class User(Base):
     role = Column(String(50), default="advertiser", nullable=False, index=True)
     country = Column(String(100), nullable=True, index=True)
     industry = Column(String(255), nullable=True)
+    industry_type = Column(String(100), nullable=True)  # New field for specific advertiser types
     managed_country = Column(String(10), nullable=True, index=True) # ISO code for country admins
     
     # OAuth fields
@@ -82,7 +83,6 @@ class User(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
     last_login = Column(DateTime(timezone=True), nullable=True)
-    cookie_consent = Column(Boolean, default=False)
     
     # Relationships
     campaigns = relationship("Campaign", back_populates="advertiser", cascade="all, delete-orphan", foreign_keys="Campaign.advertiser_id")

@@ -1,164 +1,297 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { Lock, Mail, ChevronRight, Eye, EyeOff } from 'lucide-react';
+import Dropdown from '../components/Dropdown';
+import { Terminal, Briefcase, Globe } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import { signInWithGoogle, getRedirectResult, auth } from '../firebase';
+import { SUPPORTED_INDUSTRIES } from '../config/industries';
+import { SUPPORTED_COUNTRIES } from '../config/i18nConfig';
 
 const Login = () => {
-    const { login, signup, user, t } = useApp();
+    const { login, signup, googleAuth, resetPassword, user, t } = useApp();
+    const [isLogin, setIsLogin] = useState(true);
+    const [isForgot, setIsForgot] = useState(false);
+    const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
+    const [industry, setIndustry] = useState('');
+    const [selectedCountry, setSelectedCountry] = useState('');
     const [loading, setLoading] = useState(false);
-    const [rememberMe, setRememberMe] = useState(false);
     const navigate = useNavigate();
+
+    // Prepare options for Dropdown
+    const industryOptions = SUPPORTED_INDUSTRIES.map(ind => ({
+        value: ind,
+        name: ind
+    }));
+
+    const countryOptions = SUPPORTED_COUNTRIES.map(c => ({
+        value: c.name,
+        name: c.name
+    }));
 
     useEffect(() => {
         if (user) {
-            navigate('/dashboard');
+            navigate('/');
         }
     }, [user, navigate]);
+    // Handle Google sign-in redirect result (for Railway COOP issues)
+    useEffect(() => {
+        getRedirectResult(auth)
+            .then((result) => {
+                if (result?.user) {
+                    // User signed in via redirect
+                    googleAuth(result.user)
+                        .then((res) => {
+                            if (res.success && res.user) {
+                                toast.success(t('common.success'), {
+                                    description: `Welcome back, ${res.user.username || res.user.email || 'User'}`
+                                });
+                                navigate('/');
+                            } else {
+                                toast.error(t('common.error'), { description: res.message });
+                            }
+                        })
+                        .catch((e) => {
+                            console.error('Google Redirect Auth Error:', e);
+                            toast.error(t('common.error'));
+                        });
+                }
+            })
+            .catch((error) => {
+                console.error('Redirect result error:', error);
+            });
+    }, []);
+
+    const handleGoogleSignIn = async () => {
+        setLoading(true);
+        try {
+            const googleUser = await signInWithGoogle();
+            const result = await googleAuth(googleUser);
+            if (result.success && result.user) {
+                toast.success(t('common.success'), {
+                    description: `Welcome back, ${result.user.username || result.user.email || 'User'}`
+                });
+                navigate('/');
+            } else if (!result.success) {
+                toast.error(t('common.error'), { description: result.message });
+            }
+        } catch (error) {
+            console.error('Google Auth Error:', error);
+            if (error.code !== 'auth/popup-blocked' && !error.message.includes('COOP')) {
+                toast.error(t('common.error'));
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
 
         try {
-            if (!email.includes('@') && email.toUpperCase() !== 'ADMIN') {
-                toast.error("Invalid Email", {
-                    description: 'Please use your registered Email Address.'
-                });
+            if (isForgot) {
+                if (!email.includes('@')) {
+                    toast.error(t('common.error'), {
+                        description: t('auth.email_required_msg') || 'Please use your registered Email Address.'
+                    });
+                    setLoading(false);
+                    return;
+                }
+                const result = await resetPassword(email);
+                if (result.success) {
+                    toast.success("Reset Link Sent", {
+                        description: "Check your email for the password reset link."
+                    });
+                    setIsForgot(false);
+                } else {
+                    toast.error("Error", { description: result.message });
+                }
                 setLoading(false);
                 return;
             }
 
-            const result = await login(email, password);
-            if (result.success && result.user) {
-                toast.success("Login Successful", {
-                    description: `Authorized as ${result.user.username || result.user.email || 'User'}`
-                });
-
-                if (result.user.role === 'admin' || result.user.role === 'country_admin') {
-                    navigate('/dashboard/admin/campaigns');
-                } else {
-                    navigate('/dashboard');
+            if (isLogin) {
+                if (!email.includes('@') && email.toUpperCase() !== 'ADMIN') {
+                    toast.error(t('common.error'), {
+                        description: t('auth.email_required_msg') || 'Please use your registered Email Address.'
+                    });
+                    setLoading(false);
+                    return;
                 }
-            } else if (!result.success) {
-                toast.error("Login Failed", { description: result.message || 'Invalid credentials provided.' });
+
+                const result = await login(email, password);
+                if (result.success && result.user) {
+                    toast.success(t('common.success'), {
+                        description: `Authorized as ${result.user.username || result.user.email || 'User'}`
+                    });
+
+                    // Explicitly redirect admins to admin dashboard, else to user dashboard
+                    if (result.user.role === 'admin' || result.user.role === 'ADMIN') {
+                        navigate('/admin/campaigns');
+                    } else {
+                        navigate('/');
+                    }
+                } else if (!result.success) {
+                    toast.error(t('common.error'), { description: result.message || 'Invalid credentials provided.' });
+                }
+            } else {
+                if (!industry || !selectedCountry) {
+                    toast.error(t('common.error'), {
+                        description: 'Please select both Industry and Country to continue.'
+                    });
+                    setLoading(false);
+                    return;
+                }
+
+                // Ensure arguments match: username, email, password, { extraData }
+                const result = await signup(username, email, password, {
+                    industry: industry,
+                    industry_type: industry,
+                    country: selectedCountry
+                });
+                if (result.success) {
+                    toast.success(t('common.success'), { description: 'Welcome to the platform!' });
+
+                    // Redirect after signup - if they are admin, send to admin control
+                    if (result.user?.role === 'admin' || result.user?.role === 'ADMIN') {
+                        navigate('/admin/campaigns');
+                    } else {
+                        navigate('/');
+                    }
+                } else {
+                    toast.error(t('common.error'), { description: result.message || 'Failed to create account.' });
+                }
             }
         } catch (error) {
             console.error('Auth Error:', error);
-            toast.error("Authentication Error");
+            const errorMsg = error.message?.replace('Firebase: ', '') || 'An unexpected error occurred.';
+            toast.error(t('common.error'), { description: errorMsg });
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="min-h-screen bg-black text-white flex flex-col items-center">
+        <div className="min-h-screen flex items-center justify-center bg-[#050810] p-4">
+            <div className="max-w-[440px] w-full bg-[#0a0f1d] p-10 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/5 relative">
+                <div className="text-center mb-10">
+                    <div className="inline-flex items-center justify-center p-3 rounded-2xl bg-primary/5 text-primary mb-6 border border-primary/10">
+                        <Terminal size={32} strokeWidth={2.5} />
+                    </div>
+                    <h1 className="text-4xl font-extrabold text-white mb-2 tracking-tight">{t('auth.title')}</h1>
+                    <p className="text-slate-500 text-sm font-medium">{t('auth.subtitle')}</p>
+                </div>
 
-            <div className="w-full max-w-7xl mx-auto px-6 py-12 flex flex-col lg:flex-row items-start justify-center gap-8 lg:gap-12 relative">
+                <div className="space-y-6">
+                    <div className="relative flex items-center py-2">
+                        <div className="flex-grow border-t border-slate-800/60"></div>
+                        <span className="flex-shrink mx-4 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-600">{t('auth.or_divider')}</span>
+                        <div className="flex-grow border-t border-slate-800/60"></div>
+                    </div>
+                </div>
 
-                {/* Central Login Card */}
-                <div className="flex-1 max-w-[500px] w-full mt-4 md:mt-12">
-                    <div className="bg-[#0a0f1d]/60 backdrop-blur-3xl border border-white/5 rounded-[40px] p-8 md:p-12 shadow-[0_40px_100px_rgba(0,0,0,0.8)] relative overflow-hidden group">
-                        {/* Red Accent Bar at Top */}
-                        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-rose-600 to-transparent opacity-50"></div>
+                <form onSubmit={handleSubmit} className="space-y-6 mt-6">
+                    <div className="space-y-1.5 focus-within:transform focus-within:translate-x-1 transition-transform">
+                        <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-600 ml-1">
+                            {isLogin ? (isForgot ? t('auth.email_label') : t('auth.email_label')) : t('auth.username_label')}
+                        </label>
+                        <input
+                            type="text"
+                            value={isLogin && isForgot ? email : (isLogin ? email : username)}
+                            onChange={(e) => isLogin ? setEmail(e.target.value) : setUsername(e.target.value)}
+                            className="w-full bg-[#111622] border border-slate-800 rounded-2xl px-5 py-4 text-slate-100 outline-none focus:ring-1 focus:ring-blue-500 transition-all font-bold text-sm placeholder:text-slate-700"
+                            placeholder={isLogin ? (isForgot ? "Enter your registered email" : "admin@adplatform.com") : "NEW_OPERATOR_01"}
+                            required autoComplete="off"
+                        />
+                    </div>
 
-                        <div className="relative z-10 flex flex-col items-center">
-                            {/* Security Icon */}
-                            <div className="w-16 h-16 bg-rose-600/10 border border-rose-500/20 rounded-2xl flex items-center justify-center mb-10 shadow-lg shadow-rose-900/10">
-                                <Lock className="w-7 h-7 text-rose-500" />
+                    {!isLogin && (
+                        <>
+                            <div className="space-y-1.5 animate-in slide-in-from-top-2">
+                                <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-600 ml-1">{t('auth.email_label')}</label>
+                                <input
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    className="w-full bg-[#111622] border border-slate-800 rounded-2xl px-5 py-4 text-slate-100 outline-none focus:ring-1 focus:ring-blue-500 transition-all font-bold text-sm placeholder:text-slate-700"
+                                    placeholder="operator@adplatform.com"
+                                    required
+                                />
                             </div>
 
-                            <h2 className="text-3xl font-black text-white tracking-tighter mb-3">Welcome Back</h2>
-                            <p className="text-slate-500 text-sm font-bold mb-12">Login with your Rule 7 account</p>
-
-                            <form onSubmit={handleSubmit} className="w-full space-y-8">
-                                <div className="space-y-3">
-                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">Email Address</label>
-                                    <div className="relative group/input">
-                                        <Mail className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600 group-focus-within/input:text-rose-500 transition-colors" />
-                                        <input
-                                            type="text"
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            placeholder="name@company.com"
-                                            className="w-full bg-slate-900/50 border border-white/10 rounded-2xl pl-12 pr-6 py-5 text-sm font-bold text-white placeholder:text-slate-700 focus:outline-none focus:border-rose-500/50 focus:ring-4 focus:ring-rose-500/5 transition-all"
-                                            required
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="space-y-3">
-                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">Password</label>
-                                    <div className="relative group/input">
-                                        <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600 group-focus-within/input:text-rose-500 transition-colors" />
-                                        <input
-                                            type={showPassword ? "text" : "password"}
-                                            value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            placeholder="••••••••"
-                                            className="w-full bg-slate-900/50 border border-white/10 rounded-2xl pl-12 pr-14 py-5 text-sm font-bold text-white placeholder:text-slate-700 focus:outline-none focus:border-rose-500/50 focus:ring-4 focus:ring-rose-500/5 transition-all"
-                                            required
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowPassword(!showPassword)}
-                                            className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-600 hover:text-white transition-colors"
-                                        >
-                                            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div className="flex items-center justify-between">
-                                    <label className="flex items-center gap-3 cursor-pointer group">
-                                        <div className="relative w-5 h-5">
-                                            <input
-                                                type="checkbox"
-                                                checked={rememberMe}
-                                                onChange={() => setRememberMe(!rememberMe)}
-                                                className="peer sr-only"
-                                            />
-                                            <div className="w-full h-full bg-slate-900 border border-white/10 rounded-md peer-checked:bg-rose-600 peer-checked:border-rose-600 transition-all"></div>
-                                            <svg className="absolute inset-0 w-full h-full text-white scale-0 peer-checked:scale-100 transition-transform p-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="4">
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                                            </svg>
-                                        </div>
-                                        <span className="text-xs font-bold text-slate-500 group-hover:text-slate-300 transition-colors">Remember me</span>
-                                    </label>
-                                    <Link to="/reset-password" title="Under Construction" className="text-xs font-bold text-rose-500 hover:text-rose-400 hover:underline transition-all underline-offset-4">
-                                        Forgot Password?
-                                    </Link>
-                                </div>
-
-                                <button
-                                    type="submit"
-                                    disabled={loading}
-                                    className="w-full bg-rose-700 hover:bg-rose-600 text-white font-black uppercase tracking-widest text-[11px] py-6 rounded-2xl shadow-2xl shadow-rose-900/40 transition-all flex items-center justify-center gap-3 active:scale-[0.98] group/btn"
-                                >
-                                    {loading ? "Authorizing..." : (
-                                        <>
-                                            Sign In <ChevronRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-                                        </>
-                                    )}
-                                </button>
-                            </form>
-
-                            <div className="mt-12 text-center">
-                                <p className="text-slate-500 text-sm font-bold">
-                                    Don't have an account? <Link to="/subscribe" className="text-white hover:text-rose-500 transition-all underline decoration-rose-500 underline-offset-8 decoration-2">Sign Up</Link>
-                                </p>
+                            <div className="space-y-1.5 animate-in slide-in-from-top-3">
+                                <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-600 ml-1">Industry</label>
+                                <Dropdown
+                                    options={industryOptions}
+                                    value={industry}
+                                    onChange={setIndustry}
+                                    label="Select Industry"
+                                    icon={<Briefcase size={16} className="text-primary" />}
+                                    menuWidth="w-full"
+                                    align="left"
+                                />
                             </div>
+
+                            <div className="space-y-1.5 animate-in slide-in-from-top-3">
+                                <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-600 ml-1">Country</label>
+                                <Dropdown
+                                    options={countryOptions}
+                                    value={selectedCountry}
+                                    onChange={setSelectedCountry}
+                                    label="Select Country"
+                                    icon={<Globe size={16} className="text-secondary" />}
+                                    menuWidth="w-full"
+                                    align="left"
+                                />
+                                {!selectedCountry && <p className="text-[10px] text-red-400 font-medium pl-1">Country selection is required</p>}
+                            </div>
+                        </>
+                    )}
+
+                    {!isForgot && (
+                        <div className="space-y-1.5 focus-within:transform focus-within:translate-x-1 transition-transform">
+                            <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-600 ml-1">{t('auth.password_label')}</label>
+                            <input
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="w-full bg-[#111622] border border-slate-800 rounded-2xl px-5 py-4 text-slate-100 outline-none focus:ring-1 focus:ring-blue-500 transition-all font-bold text-sm placeholder:text-slate-700"
+                                placeholder="••••••••"
+                                required={!isForgot}
+                            />
                         </div>
-                    </div>
+                    )}
 
-                    {/* Rectangle Ad Placeholder below card */}
-                    <div className="mt-12 w-full aspect-[300/250] max-w-[300px] mx-auto bg-slate-900/30 border border-white/5 rounded-lg flex items-center justify-center relative overflow-hidden group hover:border-white/10 transition-colors">
-                        <div className="absolute inset-0 opacity-[0.03] bg-[repeating-linear-gradient(45deg,#fff,#fff_10px,transparent_10px,transparent_20px)]"></div>
-                        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-700 text-center px-4">Medium Rectangle - 300x250</span>
-                    </div>
+                    {isLogin && !isForgot && (
+                        <div className="flex justify-end">
+                            <button type="button" onClick={() => setIsForgot(true)} className="text-[11px] font-bold text-slate-500 hover:text-blue-500 transition-colors uppercase tracking-wider">
+                                Forgot Password?
+                            </button>
+                        </div>
+                    )}
+
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="w-full bg-primary text-white font-bold py-4 rounded-2xl shadow-xl shadow-primary/20 hover:bg-primary-dark transition-all active:scale-[0.98] disabled:opacity-50 text-sm"
+                    >
+                        {loading ? t('auth.processing') : (isForgot ? "Send Reset Link" : (isLogin ? t('auth.login_btn') : t('auth.register_btn')))}
+                    </button>
+                </form>
+
+                <div className="mt-8">
+                    <button
+                        onClick={() => {
+                            if (isForgot) setIsForgot(false);
+                            else setIsLogin(!isLogin);
+                        }}
+                        className="w-full bg-[#111622] hover:bg-[#111622]/80 border border-slate-800/80 py-4 rounded-2xl text-xs font-semibold text-slate-400 transition-all"
+                    >
+                        {isForgot ? "Back to Login" : (isLogin ? t('auth.need_account') : t('auth.have_account'))}
+                    </button>
                 </div>
 
 

@@ -108,7 +108,10 @@ class PricingEngine:
 
         # 3. Calculate Monthly Gross Price (Base Monthly * Industry * Coverage)
         base_rate = pricing_matrix.base_rate
-        industry_multiplier = pricing_matrix.multiplier
+        
+        # Use database multiplier, but allow for override logic here for specific industry types
+        industry_multiplier = self._get_specific_industry_multiplier(industry_type, pricing_matrix.multiplier)
+        
         monthly_gross = base_rate * industry_multiplier * coverage_multiplier
         
         # 4. Calculate estimated reach
@@ -222,6 +225,15 @@ class PricingEngine:
     def _get_coverage_multiplier(self, coverage_type: models.CoverageType) -> float:
         """Get coverage multiplier based on type."""
         return self.COVERAGE_MULTIPLIERS.get(coverage_type, 1.0)
+    
+    def _get_specific_industry_multiplier(self, industry_type: str, default_multiplier: float) -> float:
+        """
+        Industry-specific pricing logic.
+        Delegates to industry_config module for a single source of truth.
+        DB multipliers (default_multiplier) are used as final fallback.
+        """
+        from .industry_config import get_industry_multiplier
+        return get_industry_multiplier(industry_type, default_multiplier)
     
     def _calculate_reach(
         self,

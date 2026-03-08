@@ -8,19 +8,19 @@ export default {
         extend: {
             colors: {
                 primary: {
-                    DEFAULT: "#e11d48", // Rose 600
-                    dark: "#be123c",    // Rose 700
-                    light: "#f43f5e",   // Rose 500
+                    DEFAULT: "#3B82F6", // Blue 500
+                    dark: "#2563EB",    // Blue 600
+                    light: "#60A5FA",   // Blue 400
                 },
                 secondary: "#64748b",
                 accent: {
-                    DEFAULT: "#e11d48", // Rose 600
-                    light: "#f43f5e",
-                    dark: "#be123c",
+                    DEFAULT: "#3B82F6", // Changed to Blue for consistency
+                    light: "#60A5FA",
+                    dark: "#2563EB",
                 },
                 success: {
-                    DEFAULT: "#10B981", // Emerald 500
-                    light: "#34D399",   // Emerald 400
+                    DEFAULT: "#3B82F6", // Blue 500
+                    light: "#60A5FA",   // Blue 400
                 },
                 warning: {
                     DEFAULT: "#D97706", // Rich Amber
@@ -44,7 +44,7 @@ export default {
                 card: "rgba(30, 41, 59, 0.7)", // Transparent dark card
             },
             fontFamily: {
-                sans: ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
+                sans: ['Inter', 'system-ui', 'sans-serif'],
             }
         },
     },

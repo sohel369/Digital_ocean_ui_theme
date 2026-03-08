@@ -48,7 +48,7 @@ async def get_payment_config():
     """
     Expose public Stripe configuration.
     """
-    is_sandbox = settings.STRIPE_SECRET_KEY.startswith("sk_test") or not is_stripe_configured()
+    is_sandbox = settings.STRIPE_SECRET_KEY.startswith("sk_test") or settings.STRIPE_SECRET_KEY.startswith("rk_test") or not is_stripe_configured()
     return {
         "publishableKey": settings.STRIPE_PUBLISHABLE_KEY,
         "isSandbox": is_sandbox,
@@ -133,7 +133,7 @@ async def create_checkout_session(
     # This applies to USD ($999,999.99) and others.
     STRIPE_MAX_UNIT = 99999999
     if amount_smallest_unit > STRIPE_MAX_UNIT:
-        if 'sk_test' in settings.STRIPE_SECRET_KEY or not is_stripe_configured():
+        if 'sk_test' in settings.STRIPE_SECRET_KEY or 'rk_test' in settings.STRIPE_SECRET_KEY or not is_stripe_configured():
             logger.warning(f"⚠️ [TEST MODE] Amount {amount_smallest_unit} exceeds global Stripe limit. Capping at 99,999,999 for success.")
             amount_smallest_unit = STRIPE_MAX_UNIT
         else:
@@ -178,7 +178,7 @@ async def create_checkout_session(
             metadata={
                 'campaign_id': campaign_id,
                 'user_id': current_user.id,
-                'environment': 'test' if 'sk_test' in settings.STRIPE_SECRET_KEY else 'production',
+                'environment': 'test' if ('sk_test' in settings.STRIPE_SECRET_KEY or 'rk_test' in settings.STRIPE_SECRET_KEY) else 'production',
                 'type': 'one_time_payment'
             }
         )
@@ -274,7 +274,7 @@ async def create_payment_intent(
             metadata={
                 'campaign_id': campaign_id,
                 'user_id': current_user.id,
-                'environment': 'test' if 'sk_test' in settings.STRIPE_SECRET_KEY else 'production'
+                'environment': 'test' if ('sk_test' in settings.STRIPE_SECRET_KEY or 'rk_test' in settings.STRIPE_SECRET_KEY) else 'production'
             }
         )
 
@@ -294,51 +294,10 @@ async def create_payment_intent(
 @router.get("/session/{session_id}")
 async def get_checkout_session(session_id: str, current_user: models.User = Depends(auth.get_current_active_user), db: Session = Depends(get_db)):
     try:
-        # Mock Session Handling
         if session_id.startswith("cs_test_") and not is_stripe_configured():
-            logger.info(f"🧪 [MOCK] Verifying session {session_id}")
-            
-            # Find the most recent pending transaction for this user
-            payment = db.query(models.PaymentTransaction).filter(
-                models.PaymentTransaction.user_id == current_user.id,
-                models.PaymentTransaction.status == 'pending'
-            ).order_by(models.PaymentTransaction.created_at.desc()).first()
-            
-            if payment:
-                # Mirror what the webhook does
-                payment.status = 'succeeded'
-                payment.completed_at = db.func.now()
-                
-                campaign = db.query(models.Campaign).filter(models.Campaign.id == payment.campaign_id).first()
-                if campaign:
-                    campaign.status = models.CampaignStatus.PENDING_REVIEW
-                    campaign.submitted_at = db.func.now()
-                    
-                    # Generate invoices
-                    from .. import invoice_service
-                    invoice_service.generate_monthly_invoices(db, campaign)
-                    logger.info(f"✅ [MOCK] Simulation complete for Campaign {campaign.id}")
-                
-                db.commit()
-                
-            return { 
-                "id": session_id, 
-                "payment_status": "paid", 
-                "amount_total": 0, 
-                "currency": "usd", 
-                "customer_email": current_user.email, 
-                "metadata": {} 
-            }
-            
+            return { "id": session_id, "payment_status": "paid", "amount_total": 0, "currency": "usd", "customer_email": current_user.email, "metadata": {} }
         session = stripe.checkout.Session.retrieve(session_id)
-        return { 
-            "id": session.id, 
-            "payment_status": session.payment_status, 
-            "amount_total": session.amount_total / 100 if session.amount_total else 0, 
-            "currency": session.currency, 
-            "customer_email": session.customer_email, 
-            "metadata": session.metadata 
-        }
+        return { "id": session.id, "payment_status": session.payment_status, "amount_total": session.amount_total / 100 if session.amount_total else 0, "currency": session.currency, "customer_email": session.customer_email, "metadata": session.metadata }
     except stripe.error.StripeError as e:
         raise HTTPException(status_code=500, detail=f"Stripe error: {str(e)}")
 

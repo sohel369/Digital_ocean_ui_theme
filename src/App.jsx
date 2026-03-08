@@ -1,5 +1,7 @@
 import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Sidebar from './components/Sidebar';
+import Header from './components/Header';
 import Dashboard from './pages/Dashboard';
 import CampaignCreation from './pages/CampaignCreation';
 import GeoTargeting from './pages/GeoTargeting';
@@ -10,25 +12,14 @@ import AdminCampaigns from './pages/AdminCampaigns';
 import AdminUsers from './pages/AdminUsers';
 import AdminDashboard from './pages/AdminDashboard';
 import FAQ from './pages/FAQ';
-import SubscriberOnly from './pages/SubscriberOnly';
-import HomePage from './pages/HomePage';
-import AdvertiserLanding from './pages/AdvertiserLanding';
+import IndustryLanding from './pages/IndustryLanding';
 
 import { Toaster } from 'sonner';
 
 import { useApp } from './context/AppContext';
-import Subscribe from './pages/Subscribe';
-import SubscribeSuccess from './pages/SubscribeSuccess';
-import Settings from './pages/Settings';
 import Login from './pages/Login';
 import ResetPassword from './pages/ResetPassword';
-import FranchisePage from './pages/FranchisePage';
-import TerritoriesPage from './pages/TerritoriesPage';
-import Invoices from './pages/Invoices';
 
-import PublicLayout from './layouts/PublicLayout';
-import DashboardLayout from './layouts/DashboardLayout';
-import CookiePopup from './components/CookiePopup';
 
 const AdminGuard = ({ children }) => {
     const { user } = useApp();
@@ -39,53 +30,91 @@ const AdminGuard = ({ children }) => {
     return children;
 };
 
-function App() {
-    const { user } = useApp();
+const MainLayout = ({ children }) => {
+    const { user, authLoading } = useApp();
+    const isAuthenticated = !!user;
+
+    if (authLoading) {
+        return (
+            <div className="min-h-screen bg-[#050810] flex items-center justify-center">
+                <div className="flex flex-col items-center gap-4">
+                    <div className="w-12 h-12 border-4 border-blue-600/20 border-t-blue-600 rounded-full animate-spin"></div>
+                    <p className="text-slate-500 font-mono text-sm animate-pulse uppercase tracking-widest">Initializing Session...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (!isAuthenticated) {
+        return <Navigate to="/login" replace />;
+    }
 
     return (
-        <>
+        <div className="flex min-h-screen bg-background selection:bg-primary/30 selection:text-primary-light overflow-x-hidden">
+            <Sidebar />
+            <div className="flex-1 flex flex-col min-w-0 max-w-full ml-0 md:ml-72 transition-all duration-300 overflow-x-hidden">
+                <Header />
+                <main className="flex-1 p-4 md:p-8 pt-4 pb-12 w-full max-w-full overflow-x-hidden">
+                    {children}
+                </main>
+            </div>
+        </div>
+    );
+};
+
+function App() {
+    const { user } = useApp();
+    return (
+        <Router>
             <Toaster position="top-right" richColors closeButton theme="dark" />
-            <CookiePopup />
             <Routes>
-                {/* Public Routes - Wrapped in layout for smooth SPA transitions */}
-                <Route element={<PublicLayout />}>
-                    <Route index element={user ? <Navigate to="/dashboard" replace /> : <HomePage />} />
-                    <Route path="/franchise" element={<FranchisePage />} />
-                    <Route path="/advertiser" element={<AdvertiserLanding />} />
-                    <Route path="/territories" element={<TerritoriesPage />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/reset-password" element={<ResetPassword />} />
-                    <Route path="/subscribe" element={<Subscribe />} />
-                    <Route path="/subscribe-success" element={<SubscribeSuccess />} />
-                    <Route path="/settings" element={<Settings />} />
-                </Route>
+                <Route path="/login" element={<Login />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
 
-                {/* Dashboard / Protected Routes */}
-                <Route path="/dashboard" element={<DashboardLayout />}>
-                    <Route index element={(user?.role?.toLowerCase() === 'admin' || user?.role?.toLowerCase() === 'country_admin') ? <AdminDashboard /> : <Dashboard />} />
-                    <Route path="campaigns/new" element={<CampaignCreation />} />
-                    <Route path="campaigns/new/:id" element={<CampaignCreation />} />
-                    <Route path="geo-targeting" element={<GeoTargeting />} />
-                    <Route path="faq" element={<SubscriberOnly />} />
-                    <Route path="insights" element={<FAQ />} />
-                    <Route path="pricing" element={<Pricing />} />
-                    <Route path="analytics" element={<Analytics />} />
-                    <Route path="invoices" element={<Invoices />} />
+                {/* ── Public Industry Landing Pages (no auth required) ── */}
+                <Route path="/vehicle-wrapping" element={<IndustryLanding />} />
+                <Route path="/automotive-services" element={<IndustryLanding />} />
+                <Route path="/logistics-software" element={<IndustryLanding />} />
+                <Route path="/gps-navigation" element={<IndustryLanding />} />
+                <Route path="/finance-services" element={<IndustryLanding />} />
 
-                    {/* Admin Specific Routes */}
-                    <Route path="admin/pricing" element={<AdminGuard><AdminPricing /></AdminGuard>} />
-                    <Route path="admin/campaigns" element={<AdminGuard><AdminCampaigns /></AdminGuard>} />
-                    <Route path="admin/users" element={<AdminGuard><AdminUsers /></AdminGuard>} />
-
-                    <Route path="*" element={<Navigate to="/dashboard" replace />} />
-                </Route>
-
-                {/* Catch-all redirect to / if not dashboard */}
-                <Route path="*" element={<Navigate to="/" replace />} />
+                <Route
+                    path="/*"
+                    element={
+                        <MainLayout>
+                            <Routes>
+                                <Route path="/" element={(user?.role?.toLowerCase() === 'admin' || user?.role?.toLowerCase() === 'country_admin') ? <AdminDashboard /> : <Dashboard />} />
+                                <Route path="/campaigns/new" element={<CampaignCreation />} />
+                                <Route path="/campaigns/new/:id" element={<CampaignCreation />} />
+                                <Route path="/geo-targeting" element={<GeoTargeting />} />
+                                <Route path="/faq" element={<FAQ />} />
+                                <Route path="/pricing" element={<Pricing />} />
+                                <Route path="/analytics" element={<Analytics />} />
+                                <Route path="/admin/pricing" element={
+                                    <AdminGuard>
+                                        <AdminPricing />
+                                    </AdminGuard>
+                                } />
+                                <Route path="/admin/campaigns" element={
+                                    <AdminGuard>
+                                        <AdminCampaigns />
+                                    </AdminGuard>
+                                } />
+                                <Route path="/admin/users" element={
+                                    <AdminGuard>
+                                        <AdminUsers />
+                                    </AdminGuard>
+                                } />
+                                <Route path="*" element={<Navigate to="/" replace />} />
+                            </Routes>
+                        </MainLayout>
+                    }
+                />
             </Routes>
-        </>
+        </Router>
     );
 }
 
 export default App;
+
 

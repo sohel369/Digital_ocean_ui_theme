@@ -545,8 +545,7 @@ async def google_auth_sync(request: Request, db: Session = Depends(get_db)):
                 "avatar": user.profile_picture,
                 "role": str(user.role.value) if hasattr(user.role, 'value') else str(user.role),
                 "country": user.country,
-                "industry": user.industry,
-                "cookie_consent": user.cookie_consent
+                "industry": user.industry
             }
         }
     except Exception as e:

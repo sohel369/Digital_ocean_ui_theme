@@ -76,49 +76,6 @@ export const AppProvider = ({ children }) => {
     const [authLoading, setAuthLoading] = useState(true);
     const [isGeoLoading, setIsGeoLoading] = useState(false);
     const [detectedCountry, setDetectedCountry] = useState(null);
-    const [showCookiePopup, setShowCookiePopup] = useState(false);
-
-    // Initial check for cookie consent
-    useEffect(() => {
-        const hasConsented = localStorage.getItem('r7_cookie_consent') === 'accepted';
-
-        // If they already consented in DB (from stored user), update localStorage and don't show
-        if (user?.cookie_consent) {
-            localStorage.setItem('r7_cookie_consent', 'accepted');
-            return;
-        }
-
-        if (!hasConsented) {
-            const timer = setTimeout(() => setShowCookiePopup(true), 2000);
-            return () => clearTimeout(timer);
-        }
-    }, [user?.cookie_consent]);
-
-    const acceptCookiePolicy = async () => {
-        setShowCookiePopup(false);
-        localStorage.setItem('r7_cookie_consent', 'accepted');
-
-        if (user) {
-            try {
-                const res = await fetch(`${API_BASE_URL}/auth/cookie-consent`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        ...getAuthHeaders()
-                    },
-                    body: JSON.stringify({ consent: true })
-                });
-
-                if (res.ok) {
-                    const freshUser = { ...user, cookie_consent: true };
-                    setUser(freshUser);
-                    localStorage.setItem('user', JSON.stringify(freshUser));
-                }
-            } catch (err) {
-                console.error("Failed to save cookie consent to DB:", err);
-            }
-        }
-    };
 
     // Base URL configuration for API calls
     const getBaseUrl = () => {
@@ -466,8 +423,8 @@ export const AppProvider = ({ children }) => {
 
                 if (statsRes.status === 401 || campaignsRes.status === 401) {
                     console.warn("🛡️ Auth expired or invalid detected in sensitive fetch.");
-                    // Only clear and redirect if we are in the dashboard area
-                    if (window.location.pathname.startsWith('/dashboard')) {
+                    // Only clear and redirect if we are not on login/landing
+                    if (window.location.pathname !== '/login' && window.location.pathname !== '/') {
                         localStorage.removeItem('user');
                         localStorage.removeItem('access_token');
                         localStorage.removeItem('refresh_token');
@@ -532,8 +489,7 @@ export const AppProvider = ({ children }) => {
                                 role: freshUser.role,
                                 country: freshUser.country || userData.country,
                                 industry: freshUser.industry || userData.industry,
-                                avatar: freshUser.profile_picture || userData.avatar,
-                                cookie_consent: freshUser.cookie_consent
+                                avatar: freshUser.profile_picture || userData.avatar
                             };
                             if (JSON.stringify(mappedUser) !== JSON.stringify(userData)) {
                                 console.log("🔄 Refreshing stale user profile from backend...");
@@ -697,8 +653,7 @@ export const AppProvider = ({ children }) => {
                                 role: userData.role,
                                 avatar: userData.profile_picture,
                                 country: userData.country,
-                                industry: userData.industry,
-                                cookie_consent: userData.cookie_consent
+                                industry: userData.industry
                             };
 
                             setUser(mappedUser);
@@ -1185,8 +1140,8 @@ export const AppProvider = ({ children }) => {
 
             const requestBody = {
                 campaign_id: Number(campaignId),
-                success_url: `${window.location.origin}/?payment=success`,
-                cancel_url: `${window.location.origin}/campaigns/new?payment=cancelled`,
+                success_url: `${window.location.origin}/dashboard?payment=success`,
+                cancel_url: `${window.location.origin}/create-campaign?payment=cancelled`,
                 currency: targetCurrency || currency
             };
 
@@ -1327,10 +1282,7 @@ export const AppProvider = ({ children }) => {
             isGeoLoading,
             loadRegionsForCountry,
             API_BASE_URL,
-            getAuthHeaders,
-            showCookiePopup,
-            acceptCookiePolicy,
-            refreshData: () => fetchData(false)
+            getAuthHeaders
         }}>
             {children}
         </AppContext.Provider>

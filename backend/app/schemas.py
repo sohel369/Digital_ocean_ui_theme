@@ -68,6 +68,7 @@ class UserSignup(BaseModel):
     password: str = Field(..., min_length=8, max_length=100)
     country: Optional[str] = None
     industry: str = Field(..., description="Industry from fixed list")
+    industry_type: Optional[str] = Field(None, description="Specific category for industry multipliers")
     role: UserRole = UserRole.ADVERTISER
     
     @field_validator('role', mode='before')
@@ -135,16 +136,11 @@ class UserResponse(BaseModel):
         
     country: Optional[str] = "US"
     industry: Optional[str] = "General"
+    industry_type: Optional[str] = None
     profile_picture: Optional[str] = None
     managed_country: Optional[str] = None
     created_at: Optional[datetime] = None
     last_login: Optional[datetime] = None
-    cookie_consent: bool = False
-
-
-class CookieConsentUpdate(BaseModel):
-    """Schema for updating cookie consent."""
-    consent: bool
 
 
 # ==================== Campaign Schemas ====================
@@ -593,25 +589,3 @@ class NotificationResponse(BaseModel):
     campaign_id: Optional[int] = None
     is_read: bool = False
     created_at: datetime
-
-
-# ==================== Invoice Schemas ====================
-class Invoice(BaseModel):
-    """Schema for invoice data."""
-    model_config = ConfigDict(from_attributes=True)
-    
-    id: int
-    campaign_id: int
-    user_id: int
-    invoice_number: str
-    amount: float
-    tax_rate: float
-    tax_amount: float
-    total_amount: float
-    currency: str
-    country: Optional[str] = None
-    billing_date: datetime
-    due_date: datetime
-    status: str
-    created_at: datetime
-    paid_at: Optional[datetime] = None

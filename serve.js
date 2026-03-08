@@ -30,12 +30,11 @@ app.get('/', (req, res, next) => {
 });
 
 // 3. Backend URL - AUTO-DETECT & ROBUST CONFIG
-// If VITE_API_URL is set (e.g. in Railway of Digital Ocean), use it.
-const BACKEND_URL = process.env.VITE_API_URL || process.env.BACKEND_URL || 'http://balanced-wholeness.railway.internal:8000';
+const RAILWAY_INTERNAL_BACKEND = 'http://balanced-wholeness.railway.internal:8000';
+const BACKEND_URL = process.env.VITE_API_URL || process.env.BACKEND_URL || RAILWAY_INTERNAL_BACKEND;
 
-console.log(`🔌 Initializing Production Proxy...`);
-console.log(`📡 Root Directory: ${__dirname}`);
-console.log(`📡 Target API Backend: ${BACKEND_URL}`);
+console.log(`🔌 Initializing Proxy...`);
+console.log(`📡 Target Backend: ${BACKEND_URL}`);
 
 // Clean target: Remove trailing /api if present as the middleware adds it back
 const API_TARGET = BACKEND_URL.replace(/\/api$/, '');
@@ -47,15 +46,14 @@ app.use('/api', createProxyMiddleware({
     secure: false,
     pathRewrite: (path, req) => {
         // Ensure path always starts with /api when going to backend
-        // If the path already has /api (e.g. from frontend), don't double it
         return path.startsWith('/api') ? path : `/api${path}`;
     },
     onProxyReq: (proxyReq, req, res) => {
         console.log(`➡️ [PROXY] ${req.method} ${req.url} -> ${API_TARGET}${proxyReq.path}`);
     },
     onProxyRes: (proxyRes, req, res) => {
-        if (proxyRes.statusCode >= 400) {
-            console.error(`⚠️ [PROXY] Backend returned ${proxyRes.statusCode} for: ${req.url}`);
+        if (proxyRes.statusCode === 404) {
+            console.error(`❌ [404] Backend returned 404 for: ${req.url}`);
         }
     },
     onError: (err, req, res) => {
@@ -63,8 +61,7 @@ app.use('/api', createProxyMiddleware({
         res.status(502).json({
             error: 'Backend Unreachable',
             details: err.message,
-            target: API_TARGET,
-            help: 'Check if your Backend service is running and VITE_API_URL is correct.'
+            target: API_TARGET
         });
     }
 }));

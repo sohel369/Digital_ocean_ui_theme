@@ -13,8 +13,7 @@ import {
     ShieldAlert,
     Shield,
     HelpCircle,
-    Users,
-    FileText
+    Users
 } from 'lucide-react';
 import { Globe } from 'lucide-react';
 import { useApp } from '../context/AppContext';
@@ -30,27 +29,26 @@ const Sidebar = () => {
     };
 
     const advertiserNavItems = [
-        { to: "/dashboard", icon: LayoutDashboard, label: t('sidebar.dashboard') },
-        { to: "/dashboard/campaigns/new", icon: PlusCircle, label: t('sidebar.new_campaign') },
-        { to: "/dashboard/geo-targeting", icon: Map, label: t('sidebar.geo_targeting') },
-        { to: "/dashboard/pricing", icon: CreditCard, label: t('sidebar.pricing') },
-        { to: "/dashboard/analytics", icon: BarChart3, label: t('sidebar.analytics') },
-        { to: "/dashboard/invoices", icon: FileText, label: 'Billing & Invoices' },
-        { to: "/dashboard/faq", icon: HelpCircle, label: 'Insights & FAQ' },
+        { to: "/", icon: LayoutDashboard, label: t('sidebar.dashboard') },
+        { to: "/campaigns/new", icon: PlusCircle, label: t('sidebar.new_campaign') },
+        { to: "/geo-targeting", icon: Map, label: t('sidebar.geo_targeting') },
+        { to: "/pricing", icon: CreditCard, label: t('sidebar.pricing') },
+        { to: "/analytics", icon: BarChart3, label: t('sidebar.analytics') },
+        { to: "/faq", icon: HelpCircle, label: 'Insights & FAQ' },
     ];
 
     const adminNavItems = [
-        { to: "/dashboard", icon: LayoutDashboard, label: 'Admin Dashboard' },
-        { to: "/dashboard/admin/campaigns", icon: Shield, label: 'Campaign Approvals' },
-        { to: "/dashboard/admin/pricing", icon: Settings, label: t('sidebar.admin_pricing') },
-        { to: "/dashboard/admin/users", icon: Users, label: 'User Directory' },
-        { to: "/dashboard/geo-targeting", icon: Map, label: t('sidebar.geo_targeting') },
+        { to: "/", icon: LayoutDashboard, label: 'Admin Dashboard' },
+        { to: "/admin/campaigns", icon: Shield, label: 'Campaign Approvals' },
+        { to: "/admin/pricing", icon: Settings, label: t('sidebar.admin_pricing') },
+        { to: "/admin/users", icon: Users, label: 'User Directory' },
+        { to: "/geo-targeting", icon: Map, label: t('sidebar.geo_targeting') },
     ];
 
     const isAdmin = user?.role?.toLowerCase() === 'admin' || user?.role?.toLowerCase() === 'country_admin';
     const currentNavItems = isAdmin ? adminNavItems : advertiserNavItems;
 
-    const activeClass = "flex items-center gap-3 px-5 py-4 text-sm font-bold rounded-2xl bg-primary text-white shadow-[0_10px_20px_rgba(225,29,72,0.3)] transition-all scale-[1.02]";
+    const activeClass = "flex items-center gap-3 px-5 py-4 text-sm font-bold rounded-2xl bg-primary text-white shadow-[0_10px_20px_rgba(59,130,246,0.3)] transition-all scale-[1.02]";
     const inactiveClass = "flex items-center gap-3 px-5 py-4 text-sm font-bold text-slate-400 hover:text-slate-200 rounded-2xl transition-all hover:bg-slate-800/40 hover:pl-6";
 
     return (
@@ -71,12 +69,12 @@ const Sidebar = () => {
                 {/* Logo Section */}
                 <div className="h-28 flex flex-col justify-center px-8 border-b border-white/5">
                     <div className="flex items-center gap-3 font-black text-2xl tracking-tighter text-white">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center text-white shadow-[0_0_20px_rgba(225,29,72,0.5)]">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center text-white shadow-[0_0_20px_rgba(59,130,246,0.5)]">
                             <span className="text-xl italic">R</span>
                         </div>
                         <div className="flex flex-col">
                             <span className="text-xl font-bold tracking-tighter leading-none mb-0.5 text-white">RULE 7</span>
-                            <span className="text-[10px] font-black text-rose-400 tracking-[0.2em] uppercase">MEDIA</span>
+                            <span className="text-[10px] font-black text-blue-400 tracking-[0.2em] uppercase">MEDIA</span>
                         </div>
                     </div>
                     {/* Close Button (Mobile) */}
@@ -89,27 +87,27 @@ const Sidebar = () => {
                 </div>
 
                 {/* Live Mode Indicator */}
-                <div className="mx-6 px-4 py-1.5 bg-rose-500/20 border border-rose-500/30 rounded-lg text-rose-500 text-[10px] font-bold uppercase tracking-wider text-center mb-2 animate-pulse">
+                <div className="mx-6 px-4 py-1.5 bg-blue-500/20 border border-blue-500/30 rounded-lg text-blue-500 text-[10px] font-bold uppercase tracking-wider text-center mb-2 animate-pulse">
                     LIVE MODE (Production)
                 </div>
 
                 {/* Navigation Items */}
                 <nav className="flex-1 p-6 space-y-2 overflow-y-auto overflow-x-hidden custom-scrollbar">
-                    <p className="text-[10px] font-black text-rose-500/60 uppercase tracking-[0.2em] mb-4 pl-2">{(user?.role?.toLowerCase() === 'admin' || user?.role?.toLowerCase() === 'country_admin') ? 'Administration' : t('sidebar.menu')}</p>
+                    <p className="text-[10px] font-black text-blue-500/60 uppercase tracking-[0.2em] mb-4 pl-2">{(user?.role?.toLowerCase() === 'admin' || user?.role?.toLowerCase() === 'country_admin') ? 'Administration' : t('sidebar.menu')}</p>
                     {currentNavItems.map((item) => (
                         <NavLink
                             key={item.to}
                             to={item.to}
                             onClick={handleNavClick}
                             className={({ isActive }) => {
-                                if (item.to === "/dashboard" && window.location.pathname !== "/dashboard") return inactiveClass;
-                                if (isActive && item.to === "/dashboard/geo-targeting") {
-                                    return "flex items-center gap-3 px-5 py-4 text-sm font-bold rounded-2xl bg-rose-500 text-white shadow-[0_10px_20px_rgba(225,29,72,0.3)] transition-all scale-[1.02]";
+                                if (item.to === "/" && window.location.pathname !== "/") return inactiveClass;
+                                if (isActive && item.to === "/geo-targeting") {
+                                    return "flex items-center gap-3 px-5 py-4 text-sm font-bold rounded-2xl bg-blue-500 text-white shadow-[0_10px_20px_rgba(59,130,246,0.3)] transition-all scale-[1.02]";
                                 }
                                 return isActive ? activeClass : inactiveClass;
                             }}
                         >
-                            <item.icon size={22} className={(user?.role?.toLowerCase() === 'admin' || user?.role?.toLowerCase() === 'country_admin') && item.to !== '/dashboard' ? 'text-amber-500' : (item.to === '/dashboard/geo-targeting' ? 'text-rose-400' : '')} />
+                            <item.icon size={22} className={(user?.role?.toLowerCase() === 'admin' || user?.role?.toLowerCase() === 'country_admin') && item.to !== '/' ? 'text-amber-500' : (item.to === '/geo-targeting' ? 'text-blue-400' : '')} />
                             {item.label}
                         </NavLink>
                     ))}
@@ -120,22 +118,22 @@ const Sidebar = () => {
                             <div className={`p-4 rounded-3xl border ${detectedCountry && detectedCountry !== country ? 'bg-red-500/10 border-red-500/20' : 'bg-slate-900/50 border-white/5'}`}>
                                 <div className="flex items-center gap-3 mb-2">
                                     {detectedCountry && detectedCountry === country ? (
-                                        <ShieldCheck className="text-rose-500" size={18} />
+                                        <ShieldCheck className="text-blue-500" size={18} />
                                     ) : (
                                         <ShieldAlert className="text-red-500" size={18} />
                                     )}
-                                    <span className="text-[10px] font-black text-rose-400/80 uppercase tracking-widest">{t('sidebar.geo_status')}</span>
+                                    <span className="text-[10px] font-black text-blue-400/80 uppercase tracking-widest">{t('sidebar.geo_status')}</span>
                                 </div>
                                 <div className="flex flex-col gap-1">
                                     <div className="flex justify-between text-[10px] font-bold">
                                         <span className="text-slate-500">{t('sidebar.ip_detected')}</span>
-                                        <span className={`${detectedCountry ? 'text-rose-400 font-extrabold' : 'text-amber-400 animate-pulse'}`}>{detectedCountry || "Pending Activation"}</span>
+                                        <span className={`${detectedCountry ? 'text-blue-400 font-extrabold' : 'text-amber-400 animate-pulse'}`}>{detectedCountry || "Pending Activation"}</span>
                                     </div>
                                     {(!detectedCountry) && (
                                         <p className="text-[8px] text-slate-600 italic mt-0.5 animate-pulse">Activates upon production launch</p>
                                     )}
                                     <div className="flex justify-between text-[10px] font-bold">
-                                        <span className="text-rose-500/60 font-black uppercase tracking-tighter text-[10px]">{t('sidebar.profile_label')}</span>
+                                        <span className="text-blue-500/60 font-black uppercase tracking-tighter text-[10px]">{t('sidebar.profile_label')}</span>
                                         <span className="text-slate-200">{country}</span>
                                     </div>
                                 </div>

@@ -53,16 +53,15 @@ const ResetPassword = () => {
 
     if (completed) {
         return (
-            <div className="min-h-screen flex items-center justify-center p-6 pb-32">
-                <div className="max-w-[480px] w-full bg-white/5 backdrop-blur-3xl p-12 md:p-16 rounded-[48px] shadow-2xl border border-white/10 text-center relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-red-600"></div>
-                    <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-red-600/10 text-red-600 mb-10 border border-red-600/20 shadow-2xl">
+            <div className="min-h-screen flex items-center justify-center bg-[#050810] p-4">
+                <div className="max-w-[440px] w-full bg-[#0a0f1d] p-10 rounded-[2.5rem] shadow-2xl border border-white/5 text-center">
+                    <div className="inline-flex items-center justify-center p-4 rounded-full bg-blue-500/10 text-blue-500 mb-6 font-bold">
                         <CheckCircle2 size={48} />
                     </div>
-                    <h1 className="text-4xl font-black text-white italic uppercase tracking-tighter mb-4">Update <span className="text-red-600">Success</span></h1>
-                    <p className="text-slate-400 mb-10 font-medium">Access protocols restored. You are being redirected to the terminal login.</p>
+                    <h1 className="text-3xl font-extrabold text-white mb-4">Password Updated</h1>
+                    <p className="text-slate-400 mb-8">Access restored. You are being redirected to the terminal login.</p>
                     <div className="flex justify-center">
-                        <div className="w-10 h-10 border-4 border-red-600/20 border-t-red-600 rounded-full animate-spin"></div>
+                        <div className="w-8 h-8 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin"></div>
                     </div>
                 </div>
             </div>
@@ -70,55 +69,53 @@ const ResetPassword = () => {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-6 pb-32">
-            <div className="max-w-[480px] w-full bg-white/5 backdrop-blur-3xl p-12 md:p-16 rounded-[48px] shadow-[0_50px_100px_rgba(0,0,0,0.8)] border border-white/10 relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-1 bg-red-600"></div>
-
-                <div className="text-center mb-12">
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-red-600/10 text-red-600 mb-8 border border-red-600/20 shadow-xl">
-                        <Terminal size={32} />
+        <div className="min-h-screen flex items-center justify-center bg-[#050810] p-4">
+            <div className="max-w-[440px] w-full bg-[#0a0f1d] p-10 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/5 relative">
+                <div className="text-center mb-10">
+                    <div className="inline-flex items-center justify-center p-3 rounded-2xl bg-primary/5 text-primary mb-6 border border-primary/10">
+                        <Terminal size={32} strokeWidth={2.5} />
                     </div>
-                    <h1 className="text-4xl font-black text-white italic uppercase tracking-tighter mb-3">Access <span className="text-red-600">Recovery</span></h1>
-                    <p className="text-slate-500 text-xs font-black uppercase tracking-[0.3em]">Initialize Security Credentials</p>
+                    <h1 className="text-3xl font-extrabold text-white mb-2 tracking-tight">Access Recovery</h1>
+                    <p className="text-slate-500 text-sm font-medium">Set your new terminal access credentials</p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-8">
-                    <div className="space-y-3">
-                        <label className="block text-[10px] font-black uppercase tracking-[0.4em] text-slate-600 ml-1">Terminal Password</label>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="space-y-1.5 trasition-transform">
+                        <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-600 ml-1">New Password</label>
                         <div className="relative">
                             <input
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-5 text-white outline-none focus:ring-1 focus:ring-red-600/50 transition-all font-bold text-sm placeholder:text-slate-800"
-                                placeholder="••••••••••••"
+                                className="w-full bg-[#111622] border border-slate-800 rounded-2xl px-5 py-4 text-slate-100 outline-none focus:ring-1 focus:ring-blue-500 transition-all font-bold text-sm placeholder:text-slate-700"
+                                placeholder="••••••••"
                                 required minLength={8}
                             />
-                            <Lock className="absolute right-6 top-5 text-slate-700" size={20} />
+                            <Lock className="absolute right-5 top-4 text-slate-700" size={18} />
                         </div>
                     </div>
 
-                    <div className="space-y-3">
-                        <label className="block text-[10px] font-black uppercase tracking-[0.4em] text-slate-600 ml-1">Confirm Protocol</label>
+                    <div className="space-y-1.5 trasition-transform">
+                        <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-600 ml-1">Confirm Password</label>
                         <div className="relative">
                             <input
                                 type="password"
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
-                                className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-5 text-white outline-none focus:ring-1 focus:ring-red-600/50 transition-all font-bold text-sm placeholder:text-slate-800"
-                                placeholder="••••••••••••"
+                                className="w-full bg-[#111622] border border-slate-800 rounded-2xl px-5 py-4 text-slate-100 outline-none focus:ring-1 focus:ring-blue-500 transition-all font-bold text-sm placeholder:text-slate-700"
+                                placeholder="••••••••"
                                 required
                             />
-                            <Lock className="absolute right-6 top-5 text-slate-700" size={20} />
+                            <Lock className="absolute right-5 top-4 text-slate-700" size={18} />
                         </div>
                     </div>
 
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-red-600 text-white font-black uppercase tracking-[0.3em] text-xs py-6 rounded-2xl shadow-2xl shadow-red-900/40 hover:bg-red-500 transition-all active:scale-[0.98] disabled:opacity-50 italic"
+                        className="w-full bg-primary text-white font-bold py-4 rounded-2xl shadow-xl shadow-primary/20 hover:bg-primary-dark transition-all active:scale-[0.98] disabled:opacity-50 text-sm"
                     >
-                        {loading ? "Adjusting Credentials..." : "Execute Reset Sequence"}
+                        {loading ? "Updating Access..." : "Execute Password Reset"}
                     </button>
                 </form>
             </div>

@@ -91,7 +91,7 @@ try:
     from app.routers import (
         auth as auth_router, campaigns, media, pricing,
         analytics, admin, payment, frontend_compat,
-        geo, campaign_approval, debug, invoices
+        geo, campaign_approval, debug
     )
     
     logger.info("✅ Dependencies loaded successfully")
@@ -116,7 +116,6 @@ try:
     app.include_router(admin.router, prefix="/api")
     app.include_router(geo.router, prefix="/api")
     app.include_router(campaign_approval.router, prefix="/api")
-    app.include_router(invoices.router, prefix="/api")
     app.include_router(frontend_compat.router)
     
     logger.info("✅ All routers registered successfully.")

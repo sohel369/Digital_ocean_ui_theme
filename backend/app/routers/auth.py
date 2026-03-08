@@ -63,6 +63,7 @@ async def signup(user_data: schemas.UserSignup, db: Session = Depends(get_db)):
         role=models.UserRole.ADVERTISER,  # Force advertiser for security
         country=user_data.country,
         industry=user_data.industry,
+        industry_type=user_data.industry_type or user_data.industry,
         last_login=datetime.utcnow()
     )
     
@@ -189,21 +190,6 @@ async def get_current_user_info(current_user: models.User = Depends(auth.get_cur
     """
     Get current authenticated user information.
     """
-    return current_user
-
-
-@router.post("/cookie-consent", response_model=schemas.UserResponse)
-async def update_cookie_consent(
-    consent_data: schemas.CookieConsentUpdate,
-    current_user: models.User = Depends(auth.get_current_user),
-    db: Session = Depends(get_db)
-):
-    """
-    Update user cookie consent status.
-    """
-    current_user.cookie_consent = consent_data.consent
-    db.commit()
-    db.refresh(current_user)
     return current_user
 
 

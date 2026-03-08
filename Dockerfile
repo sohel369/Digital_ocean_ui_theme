@@ -5,11 +5,8 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # Install system dependencies
-# libmagic1 is for python-magic, postgresql-client for DB tools
 RUN apt-get update && apt-get install -y \
     postgresql-client \
-    libmagic1 \
-    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy backend code
@@ -24,10 +21,11 @@ RUN cd backend && \
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
 ENV PATH="/opt/venv/bin:$PATH"
-ENV PYTHONPATH="/app/backend"
 
-# Expose port (Internal documentation only, Railway uses dynamic port)
+# Expose port
 EXPOSE 8000
 
-# Start command - Use dynamic port provided by Railway
-CMD ["sh", "-c", "/opt/venv/bin/uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000} --app-dir backend"]
+# Health check managed by railway.toml
+
+# Start command - Direct uvicorn without blocking init script
+CMD ["/opt/venv/bin/uvicorn", "backend.app.main:app", "--host", "0.0.0.0", "--port", "8000"]

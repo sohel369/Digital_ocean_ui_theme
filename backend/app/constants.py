@@ -21,7 +21,13 @@ SUPPORTED_INDUSTRIES = [
     "GPS Navigation and Route Optimisation Tools",
     "EV Charging Infrastructure and Electric Vehicle Solutions",
     "Mobile Device Integration and Communications Equipment",
-    "Asset Recovery and Anti-Theft Technologies"
+    "Asset Recovery and Anti-Theft Technologies",
+    # New advertiser industry verticals
+    "Vehicle Wrapping",
+    "Automotive Services",
+    "Logistics Software",
+    "GPS Navigation Tools",
+    "Finance Services",
 ]
 
 SUPPORTED_COUNTRIES = [
