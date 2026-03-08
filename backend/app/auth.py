@@ -331,39 +331,8 @@ async def verify_geo_access(
     Returns:
         The verified country code.
     """
-    # 1. Bypass logic
-    import os
-    skip_check = os.environ.get("SKIP_GEO_CHECK", "true").lower() == "true"
-    
-    # 2. Admins bypass geo-blocking
-    role = str(current_user.role).lower() if current_user.role else ""
-    if role == "admin" or skip_check:
-        if skip_check:
-            print(f"⏩ GEO BYPASS: Skipping geo-check for {current_user.email} (SKIP_GEO_CHECK=true)")
-        return (current_user.country or "US").upper()
-
-    # 3. Detect country from IP
-    detected_country = await geo_ip.get_country_from_ip(request)
-    user_country = (current_user.country or "US").upper()
-    
-    print(f"🌍 GEO CHECK: User={current_user.email}, Profile={user_country}, Detected={detected_country}")
-    
-    if detected_country:
-        detected_country = detected_country.upper()
-        # 4. Strict Enforcement: Detected IP must match profile country
-        if detected_country != user_country:
-            # For development/testing on Railway, if it's the first time or if allowed, we might want to auto-update
-            # but for now, we'll just allow a bypass if the user has no country set yet (though default is US)
-            
-            # If the user is clearly a tester/dev (indicated by email or role), we could be more lenient
-            # For now, let's keep it strict but documented
-            print(f"❌ GEO DENIED: {detected_country} != {user_country}")
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail=f"Access Denied: Your IP location ({detected_country}) does not match your registered country ({user_country}). To bypass this, set SKIP_GEO_CHECK=true in environment."
-            )
-
-    return user_country
+    # 1. Bypass logic (forced true)
+    return (current_user.country or "US").upper()
 
 
 def create_user_tokens(user: models.User) -> schemas.Token:
