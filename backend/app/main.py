@@ -119,6 +119,16 @@ try:
     app.include_router(frontend_compat.router)
     app.include_router(platform2.router, prefix="/api")
     
+    # 5. Register debug route for inspection (Admin only)
+    @app.get("/api/admin/debug/routes")
+    async def get_all_routes():
+        """Returns all registered API routes for debugging."""
+        routes = []
+        for route in app.routes:
+            if hasattr(route, "path"):
+                routes.append(f"{route.methods} {route.path}")
+        return {"routes": sorted(routes)}
+
     logger.info("✅ All routers registered successfully.")
     initialization_status["loaded"] = True
 except Exception as e:
