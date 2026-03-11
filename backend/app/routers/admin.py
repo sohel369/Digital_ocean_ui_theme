@@ -203,8 +203,27 @@ async def delete_user(
             detail="Cannot delete your own account"
         )
     
-    db.delete(user)
-    db.commit()
+    try:
+        # 1. Clear out reviewer fields if this user reviewed anything
+        db.query(models.Campaign).filter(models.Campaign.reviewed_by == user.id).update({models.Campaign.reviewed_by: None})
+        db.query(models.Media).filter(models.Media.approved_by == user.id).update({models.Media.approved_by: None})
+        
+        # 2. Delete related notifications
+        db.query(models.Notification).filter(models.Notification.user_id == user.id).delete()
+        
+        # 3. Delete related payment transactions
+        db.query(models.PaymentTransaction).filter(models.PaymentTransaction.user_id == user.id).delete()
+        
+        # 4. Delete related invoices
+        db.query(models.Invoice).filter(models.Invoice.user_id == user.id).delete()
+        
+        # Finally delete the user
+        db.delete(user)
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        logger.error(f"❌ User Deletion Error for user {user_id} by admin {current_user.email}: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Could not delete user: {str(e)}")
     
     return schemas.MessageResponse(
         message="User deleted successfully",

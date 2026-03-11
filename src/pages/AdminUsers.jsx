@@ -4,7 +4,7 @@ import { Users, Mail, Shield, MapPin, Search, RefreshCw, Trash2, Edit, X, Save, 
 import { toast } from 'sonner';
 
 const AdminUsers = () => {
-    const { API_BASE_URL, getAuthHeaders, t } = useApp();
+    const { user, API_BASE_URL, getAuthHeaders, t } = useApp();
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
@@ -82,23 +82,34 @@ const AdminUsers = () => {
         }
     };
 
-    const handleDeleteUser = async (user) => {
-        if (!window.confirm(`Are you sure you want to delete ${user.email}? This action cannot be undone.`)) return;
+    const handleDeleteUser = async (u) => {
+        // PERMISSION CHECK (Frontend level): Only Super Admins can delete users
+        const myRole = user?.role?.toLowerCase();
+        if (myRole === 'country_admin') {
+            toast.error("Permission Denied", { description: "Country Admins cannot delete user accounts. Please contact a Super Admin." });
+            return;
+        }
+
+        if (!window.confirm(`Are you sure you want to delete ${u.email}? This action cannot be undone and will remove all associated campaigns and transactions.`)) return;
 
         try {
-            const response = await fetch(`${API_BASE_URL}/admin/users/${user.id}`, {
+            const response = await fetch(`${API_BASE_URL}/admin/users/${u.id}`, {
                 method: 'DELETE',
                 headers: { ...getAuthHeaders() }
             });
 
             if (response.ok) {
-                toast.success("User deleted successfully");
+                toast.success("User deleted successfully", { description: `Account ${u.email} and all data removed.` });
                 fetchUsers();
             } else {
-                toast.error("Failed to delete user");
+                const errorData = await response.json().catch(() => ({}));
+                const errorMsg = errorData.detail || "Failed to delete user";
+                console.error("Delete user error:", errorData);
+                toast.error(errorMsg);
             }
         } catch (error) {
-            toast.error("Connection failed");
+            console.error("Delete request failed:", error);
+            toast.error("Connection failed", { description: "Please check your internet and try again." });
         }
     };
 
@@ -202,12 +213,15 @@ const AdminUsers = () => {
                                                 >
                                                     <Edit size={16} />
                                                 </button>
+                                            {user?.role?.toLowerCase() === 'admin' && (
                                                 <button
                                                     onClick={() => handleDeleteUser(u)}
-                                                    className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all"
+                                                    className="p-1.5 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all border border-red-500/10"
+                                                    title="Delete User"
                                                 >
-                                                    <Trash2 size={16} />
+                                                    <Trash2 size={14} />
                                                 </button>
+                                            )}
                                             </div>
                                         </td>
                                     </tr>
