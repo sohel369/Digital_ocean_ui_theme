@@ -254,67 +254,59 @@ async def delete_user(
     db: Session = Depends(get_db)
 ):
     """
-    Delete a user (Admin only).
-    
-    This will also delete all associated campaigns and media.
+    Delete a user (Admin only) - ULTRA FORCEFUL version.
+    Directly targets all known dependencies to prevent FK errors.
     """
+    from sqlalchemy import text
+    
     user = db.query(models.User).filter(models.User.id == user_id).first()
-    
     if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found"
-        )
+        raise HTTPException(status_code=404, detail="User not found")
     
-    # Prevent admin from deleting themselves
     if user.id == current_user.id:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Cannot delete your own account"
-        )
+        raise HTTPException(status_code=400, detail="Cannot delete your own account")
     
     try:
-        # Pre-fetch all IDs to avoid any iteration/session issues during mass deletion
-        # 1. Campaigns belonging to this user
-        campaign_ids = [c.id for c in db.query(models.Campaign.id).filter(models.Campaign.advertiser_id == user.id).all()]
+        # Step 1: Get all campaign IDs for this user
+        campaign_ids = [row[0] for row in db.execute(text("SELECT id FROM campaigns WHERE advertiser_id = :uid"), {"uid": user.id}).fetchall()]
         
-        # 2. Clear out any admin reviews by this user before deleting them
-        db.query(models.Campaign).filter(models.Campaign.reviewed_by == user.id).update({models.Campaign.reviewed_by: None})
-        db.query(models.Media).filter(models.Media.approved_by == user.id).update({models.Media.approved_by: None})
+        # Step 2: Clear reviewer/approver references (avoiding FK blockers)
+        db.execute(text("UPDATE campaigns SET reviewed_by = NULL WHERE reviewed_by = :uid"), {"uid": user.id})
+        db.execute(text("UPDATE media SET approved_by = NULL WHERE approved_by = :uid"), {"uid": user.id})
         
-        # 3. Handle related data for the user's own campaigns
+        # Step 3: Delete dependencies for these campaigns
         if campaign_ids:
-            # Delete media associated with user's campaigns
-            db.query(models.Media).filter(models.Media.campaign_id.in_(campaign_ids)).delete(synchronize_session=False)
-            
-            # Delete notifications, transactions, and invoices for these campaigns
-            db.query(models.Notification).filter(models.Notification.campaign_id.in_(campaign_ids)).delete(synchronize_session=False)
-            db.query(models.PaymentTransaction).filter(models.PaymentTransaction.campaign_id.in_(campaign_ids)).delete(synchronize_session=False)
-            db.query(models.Invoice).filter(models.Invoice.campaign_id.in_(campaign_ids)).delete(synchronize_session=False)
-            
-            # Finally delete the campaigns themselves
-            db.query(models.Campaign).filter(models.Campaign.id.in_(campaign_ids)).delete(synchronize_session=False)
-            
-        # 4. Delete any other miscellaneous user-related data (just in case they aren't linked to a campaign)
-        db.query(models.Notification).filter(models.Notification.user_id == user.id).delete(synchronize_session=False)
-        db.query(models.PaymentTransaction).filter(models.PaymentTransaction.user_id == user.id).delete(synchronize_session=False)
-        db.query(models.Invoice).filter(models.Invoice.user_id == user.id).delete(synchronize_session=False)
+            c_ids = tuple(campaign_ids) if len(campaign_ids) > 1 else f"({campaign_ids[0]})" if campaign_ids else None
+            if c_ids:
+                db.execute(text(f"DELETE FROM media WHERE campaign_id IN {c_ids}"))
+                db.execute(text(f"DELETE FROM notifications WHERE campaign_id IN {c_ids}"))
+                db.execute(text(f"DELETE FROM payment_transactions WHERE campaign_id IN {c_ids}"))
+                db.execute(text(f"DELETE FROM invoices WHERE campaign_id IN {c_ids}"))
+                db.execute(text(f"DELETE FROM campaigns WHERE id IN {c_ids}"))
         
-        # 5. Finally, delete the User record
-        db.delete(user)
+        # Step 4: Delete direct user dependencies (just in case)
+        db.execute(text("DELETE FROM notifications WHERE user_id = :uid"), {"uid": user.id})
+        db.execute(text("DELETE FROM payment_transactions WHERE user_id = :uid"), {"uid": user.id})
+        db.execute(text("DELETE FROM invoices WHERE user_id = :uid"), {"uid": user.id})
+        
+        # Final Step: Delete the user itself
+        db.execute(text("DELETE FROM users WHERE id = :uid"), {"uid": user.id})
+        
         db.commit()
+        logger.info(f"🔥 Successfully force-deleted user {user.email} (ID: {user.id})")
+        
     except Exception as e:
         db.rollback()
-        logger.error(f"❌ User Deletion Error for user {user_id} by admin {current_user.email}: {str(e)}")
-        # Provide more specific error for foreign key violations if they persist
-        error_msg = str(e)
-        if "foreign key" in error_msg.lower():
-            error_msg = "Database Integrity Error: User has dependencies that could not be automatically removed."
-        raise HTTPException(status_code=500, detail=f"User deletion failed: {error_msg}")
+        logger.error(f"❌ Force Delete Failed for {user_id}: {str(e)}")
+        # If it still fails, it's likely a table we don't know about or a schema issue
+        raise HTTPException(
+            status_code=500, 
+            detail=f"Force delete failed. System error: {str(e)}. Try running /api/admin/fix-db first."
+        )
     
     return schemas.MessageResponse(
         message="User deleted successfully",
-        detail=f"User {user.email} and all associated data have been deleted"
+        detail=f"User {user.email} and all traces of their data have been purged."
     )
 
 
