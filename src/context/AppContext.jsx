@@ -28,9 +28,9 @@ export const AppProvider = ({ children }) => {
     const [notifications, setNotifications] = useState([]);
     const [pricingData, setPricingData] = useState({
         industries: [
-            { name: 'Retail', displayName: 'Retail', multiplier: 1.2 },
-            { name: 'Healthcare', displayName: 'Healthcare', multiplier: 1.5 },
-            { name: 'Technology', displayName: 'Technology', multiplier: 1.0 }
+            { name: 'Tyres and Wheels', displayName: 'Tyres and Wheels', multiplier: 1.1 },
+            { name: 'Vehicle Servicing and Maintenance', displayName: 'Vehicle Servicing and Maintenance', multiplier: 1.2 },
+            { name: 'Automotive Finance Solutions', displayName: 'Automotive Finance Solutions', multiplier: 2.0 }
         ],
         adTypes: [
             { name: 'Display', baseRate: 100.0 }
@@ -38,6 +38,14 @@ export const AppProvider = ({ children }) => {
         states: [],
         discounts: { state: 0.15, national: 0.30 },
         currency: 'USD'
+    });
+
+    const [platform2Data, setPlatform2Data] = useState({
+        categories: [],
+        adFormats: [],
+        emailFormats: [],
+        coverageOptions: [],
+        loading: false
     });
 
     const [paymentConfig, setPaymentConfig] = useState({
@@ -352,6 +360,34 @@ export const AppProvider = ({ children }) => {
     }, [syncedCountries, API_BASE_URL]);
 
 
+    const loadPlatform2Data = async () => {
+        try {
+            setPlatform2Data(prev => ({ ...prev, loading: true }));
+            const response = await fetch(`${API_BASE_URL}/platform2/pricing-summary`, {
+                headers: { ...getAuthHeaders() },
+                credentials: 'include'
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setPlatform2Data({
+                    categories: data.categories || [],
+                    adFormats: data.ad_formats || [],
+                    emailFormats: data.email_formats || [],
+                    coverageOptions: data.coverage_options || [],
+                    durationDiscounts: data.duration_discounts || [],
+                    basePrice: data.base_price || 100,
+                    loading: false
+                });
+            }
+        } catch (e) {
+            console.error("❌ Failed to load Platform 2 data:", e);
+        } finally {
+            setPlatform2Data(prev => ({ ...prev, loading: false }));
+        }
+    };
+
+
     const fetchData = async (isBackgroundPoll = false) => {
         try {
             const token = localStorage.getItem('access_token');
@@ -401,6 +437,7 @@ export const AppProvider = ({ children }) => {
                     // Immediately load regions to ensure we have the full list
                     // Use silent: true for background poll to avoid disruptive UI loaders
                     await loadRegionsForCountry(country, freshPricing, true);
+                    await loadPlatform2Data();
                 }
 
                 if (paymentRes.ok) {
@@ -1242,6 +1279,8 @@ export const AppProvider = ({ children }) => {
             setSidebarOpen,
             CONSTANTS,
             pricingData,
+            platform2Data,
+            loadPlatform2Data,
             paymentConfig,
             savePricingConfig,
             addCampaign,

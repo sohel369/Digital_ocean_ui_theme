@@ -91,7 +91,7 @@ try:
     from app.routers import (
         auth as auth_router, campaigns, media, pricing,
         analytics, admin, payment, frontend_compat,
-        geo, campaign_approval, debug
+        geo, campaign_approval, debug, platform2
     )
     
     logger.info("✅ Dependencies loaded successfully")
@@ -117,6 +117,7 @@ try:
     app.include_router(geo.router, prefix="/api")
     app.include_router(campaign_approval.router, prefix="/api")
     app.include_router(frontend_compat.router)
+    app.include_router(platform2.router, prefix="/api")
     
     logger.info("✅ All routers registered successfully.")
     initialization_status["loaded"] = True

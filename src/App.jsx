@@ -13,6 +13,7 @@ import AdminUsers from './pages/AdminUsers';
 import AdminDashboard from './pages/AdminDashboard';
 import FAQ from './pages/FAQ';
 import IndustryLanding from './pages/IndustryLanding';
+import Platform2CategorySelector from './pages/Platform2CategorySelector';
 
 import { Toaster } from 'sonner';
 
@@ -72,11 +73,11 @@ function App() {
                 <Route path="/reset-password" element={<ResetPassword />} />
 
                 {/* ── Public Industry Landing Pages (no auth required) ── */}
-                <Route path="/vehicle-wrapping" element={<IndustryLanding />} />
+                <Route path="/real-estate" element={<IndustryLanding />} />
+                <Route path="/legal-services" element={<IndustryLanding />} />
+                <Route path="/financial-services" element={<IndustryLanding />} />
+                <Route path="/health-medical" element={<IndustryLanding />} />
                 <Route path="/automotive-services" element={<IndustryLanding />} />
-                <Route path="/logistics-software" element={<IndustryLanding />} />
-                <Route path="/gps-navigation" element={<IndustryLanding />} />
-                <Route path="/finance-services" element={<IndustryLanding />} />
 
                 <Route
                     path="/*"
@@ -89,6 +90,7 @@ function App() {
                                 <Route path="/geo-targeting" element={<GeoTargeting />} />
                                 <Route path="/faq" element={<FAQ />} />
                                 <Route path="/pricing" element={<Pricing />} />
+                                <Route path="/platform2/categories" element={<Platform2CategorySelector />} />
                                 <Route path="/analytics" element={<Analytics />} />
                                 <Route path="/admin/pricing" element={
                                     <AdminGuard>

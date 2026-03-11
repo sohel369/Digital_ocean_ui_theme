@@ -24,36 +24,30 @@ Adding a new industry:
 # ---------------------------------------------------------------------------
 
 INDUSTRY_MULTIPLIERS: dict[str, float] = {
-    # ── Existing automotive / transport verticals ──
-    "Tyres and Wheels": 1.1,
-    "Vehicle Servicing and Maintenance": 1.2,
-    "Panel Beating and Smash Repairs": 1.3,
-    "Automotive Finance Solutions": 2.0,
-    "Vehicle Insurance Products": 2.5,
-    "Auto Parts, Tools, and Accessories": 1.1,
-    "Fleet Management Tools": 1.3,
-    "Workshop Technology and Equipment": 1.2,
-    "Telematics Systems and Vehicle Tracking Solutions": 1.4,
-    "Fuel Cards and Fuel Management Services": 1.3,
-    "Vehicle Cleaning and Detailing Services": 1.0,
-    "Logistics and Scheduling Software": 1.4,
-    "Safety and Compliance Solutions": 1.2,
-    "Driver Training and Induction Programs": 1.1,
-    "Roadside Assistance Programs": 1.2,
-    "GPS Navigation and Route Optimisation Tools": 1.35,
-    "EV Charging Infrastructure and Electric Vehicle Solutions": 1.5,
-    "Mobile Device Integration and Communications Equipment": 1.3,
-    "Asset Recovery and Anti-Theft Technologies": 1.4,
-    # ── Legacy placeholder industries ──
-    "Industry A": 1.5,
-    "Industry B": 1.8,
-    "Industry C": 2.2,
-    # ── New advertiser industry verticals (2024 expansion) ──
-    "Vehicle Wrapping": 1.15,
-    "Automotive Services": 1.2,
-    "Logistics Software": 1.4,
-    "GPS Navigation Tools": 1.35,
-    "Finance Services": 2.2,
+    "Real Estate & Property Agents": 2.5,
+    "Legal Services, Lawyers & Mediation": 2.5,
+    "Financial and Insurance Services": 2.3,
+    "Health, Wellness & Medical": 2.3,
+    "Automotive Services": 2.2,
+    "IT & Tech Support Services": 2.0,
+    "Professional Training & Certification": 2.0,
+    "Department Stores and Electronics": 2.0,
+    "Mobile Phone and Internet Services": 2.0,
+    "Education & Tutoring": 1.8,
+    "Event & Wedding Services": 1.8,
+    "Beauty and Cosmetic Surgery": 1.7,
+    "Fitness & Personal Training": 1.6,
+    "Home & Garden": 1.6,
+    "Lifestyle, Boutique, Apparel & Accessories": 1.5,
+    "Travel & Tourism": 1.5,
+    "Storage, Logistics and Removalists": 1.5,
+    "Restaurants, Food & Beverage": 1.3,
+    "Trades & Home Services": 1.3,
+    "Pets & Animals": 1.2,
+    "Childcare & Aged Care Providers": 1.2,
+    "Radio and TV Stations": 1.2,
+    "Baby Clothes, Accessories & Toys": 1.1,
+    "Accounting & Tax Services": 1.1
 }
 
 
@@ -73,9 +67,9 @@ def get_industry_multiplier(industry_type: str, default: float = 1.0) -> float:
 # (used by backend if SEO sitemap generation is added later)
 # ---------------------------------------------------------------------------
 INDUSTRY_LANDING_SLUGS: dict[str, str] = {
-    "Vehicle Wrapping": "/vehicle-wrapping",
+    "Real Estate & Property Agents": "/real-estate",
+    "Legal Services, Lawyers & Mediation": "/legal-services",
+    "Financial and Insurance Services": "/financial-services",
+    "Health, Wellness & Medical": "/health-medical",
     "Automotive Services": "/automotive-services",
-    "Logistics Software": "/logistics-software",
-    "GPS Navigation Tools": "/gps-navigation",
-    "Finance Services": "/finance-services",
 }

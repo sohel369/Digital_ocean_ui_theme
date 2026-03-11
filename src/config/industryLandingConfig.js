@@ -10,15 +10,15 @@
 export const INDUSTRY_LANDING_PAGES = {
     "vehicle-wrapping": {
         // SEO
-        title: "Vehicle Wrapping Advertising | Rule 7 Media",
+        title: "Vinyl Vehicle Wrapping Services Advertising | Rule 7 Media",
         metaDescription:
-            "Reach drivers, fleet managers, and vehicle-wrap buyers in your target area. Rule 7 Media connects vehicle wrapping businesses with high-intent local audiences through precision geo-targeted advertising.",
-        ogTitle: "Vehicle Wrapping Advertisers — Rule 7 Media",
+            "Reach drivers, fleet managers, and vehicle-wrap buyers in your target area. Rule 7 Media connects vinyl vehicle wrapping businesses with high-intent local audiences.",
+        ogTitle: "Vinyl Vehicle Wrapping Advertisers — Rule 7 Media",
         ogDescription:
             "Fixed monthly advertising for vehicle wrapping studios. Target by radius, state, or country with built-in geo-targeting.",
         // Page Content
-        industry: "Vehicle Wrapping",
-        industryKey: "Vehicle Wrapping",
+        industry: "Vinyl Vehicle Wrapping Services",
+        industryKey: "Vinyl Vehicle Wrapping Services",
         heroHeading: "Grow Your Vehicle Wrapping Business",
         heroSubheading:
             "Reach local fleet operators, car enthusiasts, and commercial buyers who are actively searching for vehicle wrap services in your coverage zone.",
@@ -48,7 +48,7 @@ export const INDUSTRY_LANDING_PAGES = {
                 icon: "🛡️",
                 title: "Industry Multiplier: 1.15×",
                 description:
-                    "Vehicle wrapping campaigns are priced at a competitive 1.15× industry multiplier.",
+                    "Vinyl vehicle wrapping campaigns are priced at a competitive 1.15× industry multiplier.",
             },
         ],
         // Trust Bullets
@@ -65,8 +65,8 @@ export const INDUSTRY_LANDING_PAGES = {
                 a: "Yes — select a 30-mile radius around any postcode for hyper-local reach.",
             },
             {
-                q: "How is pricing calculated for vehicle wrapping?",
-                a: "Base rate × 1.15 (vehicle wrapping multiplier) × coverage multiplier. Use the Pricing page to get an instant estimate.",
+                q: "How is pricing calculated for vinyl wrapping?",
+                a: "Base rate × 1.15 (vinyl wrapping multiplier) × coverage multiplier. Use the Pricing page to get an instant estimate.",
             },
             {
                 q: "Can I run a state-wide campaign for fleet contracts?",
@@ -78,14 +78,14 @@ export const INDUSTRY_LANDING_PAGES = {
     },
 
     "automotive-services": {
-        title: "Automotive Services Advertising | Rule 7 Media",
+        title: "Vehicle Servicing and Maintenance Advertising | Rule 7 Media",
         metaDescription:
-            "Advertise your automotive service business to local car owners. Rule 7 Media delivers fixed-price geo-targeted advertising for workshops, tyre shops, and service centres.",
-        ogTitle: "Automotive Services Advertisers — Rule 7 Media",
+            "Advertise your vehicle servicing and maintenance business to local car owners. Rule 7 Media delivers fixed-price geo-targeted advertising for workshops and service centres.",
+        ogTitle: "Vehicle Servicing and Maintenance — Rule 7 Media",
         ogDescription:
             "Fixed monthly advertising for automotive service businesses. Radius, state, or country coverage with no hidden costs.",
-        industry: "Automotive Services",
-        industryKey: "Automotive Services",
+        industry: "Vehicle servicing and maintenance",
+        industryKey: "Vehicle servicing and maintenance",
         heroHeading: "Put Your Auto Service Business on the Map",
         heroSubheading:
             "Connect with local drivers needing servicing, repairs, tyres, and mechanical work — every month, with predictable pricing.",
@@ -100,41 +100,41 @@ export const INDUSTRY_LANDING_PAGES = {
             },
             {
                 icon: "📍",
-                title: "Workshop-Level Radius Targeting",
+                title: "Geo-Fenced Exposure",
                 description:
-                    "Pin campaigns to a 30-mile radius around your workshop for maximum local relevance.",
+                    "Own your local area. Your ads appear where your customers live and work.",
             },
             {
-                icon: "🧾",
-                title: "Monthly Invoice & Billing",
+                icon: "💶",
+                title: "Fixed Monthly Rates",
                 description:
-                    "Stripe-powered billing with a clear monthly invoice so you always know what you're paying.",
+                    "Predictable marketing spend with no variable bidding or surprise fees.",
             },
             {
                 icon: "🛡️",
                 title: "Industry Multiplier: 1.2×",
                 description:
-                    "Automotive service campaigns carry a 1.2× multiplier, reflecting high local demand.",
+                    "Auto servicing is priced at a 1.2× multiplier, providing excellent local reach ROI.",
             },
         ],
         trustPoints: [
-            "No contracts — pay month-to-month",
-            "Geo-blocking prevents overseas ad spend",
-            "Tax-compliant invoicing for all supported countries",
-            "Admin-reviewed campaigns for quality assurance",
+            "Automatic monthly billing — cancel at any time",
+            "Itemised invoices with country-specific tax compliance",
+            "Secure transactions via Stripe",
+            "Dashboard access to track audience metrics",
         ],
         faqs: [
             {
-                q: "I run several workshops — can I create separate campaigns per location?",
-                a: "Yes. Each campaign can target a different radius or state, giving each location its own coverage zone.",
+                q: "Does the platform support mobile service workshops?",
+                a: "Yes — set your target radius to match your mobile service range to reach customers exactly where you operate.",
             },
             {
-                q: "What is the industry multiplier for automotive services?",
-                a: "1.2× — meaning your monthly price = base rate × 1.2 × coverage multiplier.",
+                q: "How soon does my ad go live?",
+                a: "After submission, our admins review the creative. Most campaigns are live within 24 hours.",
             },
             {
-                q: "Do you support international automotive businesses?",
-                a: "Yes — we support 15+ countries with country-specific tax rates and currency handling.",
+                q: "Is there a long-term contract?",
+                a: "No. All campaigns are month-to-month by default. You can commit to 6 or 12 months for significant discounts.",
             },
         ],
         accentColor: "#f59e0b",
@@ -142,14 +142,14 @@ export const INDUSTRY_LANDING_PAGES = {
     },
 
     "logistics-software": {
-        title: "Logistics Software Advertising | Rule 7 Media",
+        title: "Logistics and Scheduling Software Advertising | Rule 7 Media",
         metaDescription:
             "Reach fleet operators, logistics managers, and transport companies. Rule 7 Media delivers geo-targeted advertising for logistics and scheduling software providers.",
-        ogTitle: "Logistics Software Advertisers — Rule 7 Media",
+        ogTitle: "Logistics and Scheduling Software — Rule 7 Media",
         ogDescription:
             "Fixed monthly advertising for logistics software companies. Target fleet managers and transport operators by location.",
-        industry: "Logistics Software",
-        industryKey: "Logistics Software",
+        industry: "Logistics and scheduling software",
+        industryKey: "Logistics and scheduling software",
         heroHeading: "Get Your Logistics Software in Front of Fleet Decision-Makers",
         heroSubheading:
             "Connect with transport operators, fleet managers, and supply-chain teams who need your scheduling and logistics tools right now.",
@@ -206,14 +206,14 @@ export const INDUSTRY_LANDING_PAGES = {
     },
 
     "gps-navigation": {
-        title: "GPS Navigation Tools Advertising | Rule 7 Media",
+        title: "GPS Navigation and Route Optimisation Advertising | Rule 7 Media",
         metaDescription:
             "Advertise GPS navigation and route optimisation tools to drivers, fleets, and logistics companies. Rule 7 Media provides fixed-price geo-targeted campaigns.",
-        ogTitle: "GPS Navigation Tools Advertisers — Rule 7 Media",
+        ogTitle: "GPS Navigation and Route Optimisation — Rule 7 Media",
         ogDescription:
             "Fixed monthly advertising for GPS and navigation product companies. Reach drivers and fleet managers by geography.",
-        industry: "GPS Navigation Tools",
-        industryKey: "GPS Navigation Tools",
+        industry: "GPS navigation and route optimisation tools",
+        industryKey: "GPS navigation and route optimisation tools",
         heroHeading: "Put Your GPS Navigation Tools on Every Route",
         heroSubheading:
             "Reach drivers, fleet managers, and logistics teams who rely on navigation and route optimisation in your target coverage zone.",
@@ -270,14 +270,14 @@ export const INDUSTRY_LANDING_PAGES = {
     },
 
     "finance-services": {
-        title: "Finance Services Advertising | Rule 7 Media",
+        title: "Automotive Finance Solutions Advertising | Rule 7 Media",
         metaDescription:
-            "Reach high-intent financial consumers with geo-targeted campaigns. Rule 7 Media delivers fixed-price advertising for finance brokers, lenders, and fintech companies.",
-        ogTitle: "Finance Services Advertisers — Rule 7 Media",
+            "Reach high-intent automotive finance consumers with geo-targeted campaigns. Rule 7 Media delivers fixed-price advertising for finance brokers and lenders.",
+        ogTitle: "Automotive Finance Solutions — Rule 7 Media",
         ogDescription:
-            "Fixed monthly advertising for finance and financial services companies. Target consumers by geography with full compliance support.",
-        industry: "Finance Services",
-        industryKey: "Finance Services",
+            "Fixed monthly advertising for automotive finance companies. Target consumers by geography with full compliance support.",
+        industry: "Automotive finance solutions",
+        industryKey: "Automotive finance solutions",
         heroHeading: "Reach High-Intent Financial Consumers",
         heroSubheading:
             "Whether you offer lending, insurance, investment products, or fintech tools — connect with in-market consumers in your coverage zone with a flat monthly investment.",
@@ -288,7 +288,7 @@ export const INDUSTRY_LANDING_PAGES = {
                 icon: "🏦",
                 title: "High-LTV Consumer Targeting",
                 description:
-                    "Reach consumers actively researching finance products — lending, insurance, and investment.",
+                    "Reach consumers actively researching automotive finance products and lending.",
             },
             {
                 icon: "🌏",
@@ -304,9 +304,9 @@ export const INDUSTRY_LANDING_PAGES = {
             },
             {
                 icon: "🛡️",
-                title: "Industry Multiplier: 2.2×",
+                title: "Industry Multiplier: 2.0×",
                 description:
-                    "Finance campaigns carry the highest multiplier (2.2×) reflecting the premium value of financial leads.",
+                    "Automotive finance campaigns carry a premium multiplier (2.0×) reflecting the high value of financial leads.",
             },
         ],
         trustPoints: [
@@ -317,8 +317,8 @@ export const INDUSTRY_LANDING_PAGES = {
         ],
         faqs: [
             {
-                q: "Why does finance have the highest industry multiplier?",
-                a: "Finance leads have a significantly higher lifetime value than most verticals. The 2.2× multiplier reflects accordingly.",
+                q: "Why does automotive finance have a high industry multiplier?",
+                a: "Automotive finance leads have a significantly higher lifetime value than most verticals. The 2.0× multiplier reflects this accordingly.",
             },
             {
                 q: "Does the platform support regulated financial services advertising?",

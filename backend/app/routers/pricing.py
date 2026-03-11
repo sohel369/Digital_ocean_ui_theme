@@ -236,11 +236,18 @@ async def get_global_pricing_config(
         # Ensure we always have at least some industries if DB is fresh
         if not industries:
             default_industries = [
-                "Tyres And Wheels", "Vehicle Servicing And Maintenance", "Panel Beating And Smash Repairs",
-                "Automotive Finance Solutions", "Vehicle Insurance Products", "Auto Parts Tools And Accessories",
-                "Workshop Technology And Equipment", "Fuel Cards And Fuel Management Services", 
-                "Vehicle Cleaning And Detailing Services", "Logistics And Scheduling Software",
-                "Safety And Compliance Solutions", "Ev Charging Infrastructure"
+                "Real Estate & Property Agents", "Legal Services, Lawyers & Mediation",
+                "Financial and Insurance Services", "Health, Wellness & Medical",
+                "Automotive Services", "IT & Tech Support Services",
+                "Professional Training & Certification", "Department Stores and Electronics",
+                "Mobile Phone and Internet Services", "Education & Tutoring",
+                "Event & Wedding Services", "Beauty and Cosmetic Surgery",
+                "Fitness & Personal Training", "Home & Garden",
+                "Lifestyle, Boutique, Apparel & Accessories", "Travel & Tourism",
+                "Storage, Logistics and Removalists", "Restaurants, Food & Beverage",
+                "Trades & Home Services", "Pets & Animals",
+                "Childcare & Aged Care Providers", "Radio and TV Stations",
+                "Baby Clothes, Accessories & Toys", "Accounting & Tax Services"
             ]
             industries = [schemas.IndustryConfig(name=name, multiplier=1.0) for name in default_industries]
 
@@ -269,10 +276,17 @@ async def get_global_pricing_config(
             
         if not ad_types:
             ad_types = [
-                schemas.AdTypeConfig(name="Leaderboard (728x90)", base_rate=150.0),
-                schemas.AdTypeConfig(name="Skyscraper (160x600)", base_rate=180.0),
-                schemas.AdTypeConfig(name="Medium Rectangle (300x250)", base_rate=200.0),
-                schemas.AdTypeConfig(name="Mobile Leaderboard (320x50)", base_rate=100.0)
+                schemas.AdTypeConfig(name="Mobile Leaderboard", base_rate=100.0),
+                schemas.AdTypeConfig(name="Leaderboard Footer", base_rate=120.0),
+                schemas.AdTypeConfig(name="Skyscraper Left", base_rate=150.0),
+                schemas.AdTypeConfig(name="Skyscraper Right", base_rate=150.0),
+                schemas.AdTypeConfig(name="Leaderboard Header", base_rate=180.0),
+                schemas.AdTypeConfig(name="Medium Rectangle", base_rate=200.0),
+                schemas.AdTypeConfig(name="Large Rectangle", base_rate=220.0),
+                schemas.AdTypeConfig(name="Video 15s", base_rate=500.0),
+                schemas.AdTypeConfig(name="Video 30s", base_rate=600.0),
+                schemas.AdTypeConfig(name="Video 45s", base_rate=700.0),
+                schemas.AdTypeConfig(name="Video 60s", base_rate=800.0)
             ]
 
         # 3. Geo Data

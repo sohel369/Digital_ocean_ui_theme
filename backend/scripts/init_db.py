@@ -78,12 +78,13 @@ def seed_data():
         pricing_entries = []
         for country_code in country_codes:
             for ind in industries:
+                from app.industry_config import get_industry_multiplier
                 pricing_entries.append(models.PricingMatrix(
                     industry_type=ind,
                     advert_type="display",
                     coverage_type=models.CoverageType.RADIUS_30,
                     base_rate=2500.0,
-                    multiplier=1.2 if "Retail" in ind else 1.5 if "Healthcare" in ind else 1.0,
+                    multiplier=get_industry_multiplier(ind, 1.0),
                     state_discount=15.0, # Percentage as float 15.0
                     national_discount=30.0, # Percentage as float 30.0
                     country_id=country_code

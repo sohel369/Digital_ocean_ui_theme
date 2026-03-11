@@ -113,25 +113,30 @@ export const translations = {
             "Contact Us": "Contact Us"
         },
         industry: {
-            tyres_and_wheels: "Tyres And Wheels",
-            vehicle_servicing_and_maintenance: "Vehicle Servicing And Maintenance",
-            panel_beating_and_smash_repairs: "Panel Beating And Smash Repairs",
-            automotive_finance_solutions: "Automotive Finance Solutions",
-            vehicle_insurance_products: "Vehicle Insurance Products",
-            auto_parts_tools_and_accessories: "Auto Parts Tools And Accessories",
-            fleet_management_tools: "Fleet Management Tools",
-            workshop_technology_and_equipment: "Workshop Technology And Equipment",
-            telematics_systems_and_vehicle_tracking_solutions: "Telematics Systems And Vehicle Tracking Solutions",
-            fuel_cards_and_fuel_management_services: "Fuel Cards And Fuel Management Services",
-            vehicle_cleaning_and_detailing_services: "Vehicle Cleaning And Detailing Services",
-            logistics_and_scheduling_software: "Logistics And Scheduling Software",
-            safety_and_compliance_solutions: "Safety And Compliance Solutions",
-            driver_training_and_induction_programs: "Driver Training And Induction Programs",
-            roadside_assistance_programs: "Roadside Assistance Programs",
-            gps_navigation_and_route_optimisation_tools: "Gps Navigation And Route Optimisation Tools",
-            ev_charging_infrastructure_and_electric_vehicle_solutions: "Ev Charging Infrastructure And Electric Vehicle Solutions",
-            mobile_device_integration_and_communications_equipment: "Mobile Device Integration And Communications Equipment",
-            asset_recovery_and_anti_theft_technologies: "Asset Recovery And Anti Theft Technologies"
+            real_estate__property_agents: "Real Estate & Property Agents",
+            legal_services_lawyers__mediation: "Legal Services, Lawyers & Mediation",
+            financial_and_insurance_services: "Financial and Insurance Services",
+            health_wellness__medical: "Health, Wellness & Medical",
+            automotive_services: "Automotive Services",
+            it__tech_support_services: "IT & Tech Support Services",
+            professional_training__certification: "Professional Training & Certification",
+            department_stores_and_electronics: "Department Stores and Electronics",
+            mobile_phone_and_internet_services: "Mobile Phone and Internet Services",
+            education__tutoring: "Education & Tutoring",
+            event__wedding_services: "Event & Wedding Services",
+            beauty_and_cosmetic_surgery: "Beauty and Cosmetic Surgery",
+            fitness__personal_training: "Fitness & Personal Training",
+            home__garden: "Home & Garden",
+            lifestyle_boutique_apparel__accessories: "Lifestyle, Boutique, Apparel & Accessories",
+            travel__tourism: "Travel & Tourism",
+            storage_logistics_and_removalists: "Storage, Logistics and Removalists",
+            restaurants_food__beverage: "Restaurants, Food & Beverage",
+            trades__home_services: "Trades & Home Services",
+            pets__animals: "Pets & Animals",
+            childcare__aged_care_providers: "Childcare & Aged Care Providers",
+            radio_and_tv_stations: "Radio and TV Stations",
+            baby_clothes_accessories__toys: "Baby Clothes, Accessories & Toys",
+            accounting__tax_services: "Accounting & Tax Services"
         },
         formats: {
             leaderboard: "Leaderboard (728x90)",
@@ -376,7 +381,8 @@ export const translations = {
             gps_navigation_and_route_optimisation_tools: "जीपीएस नेविगेशन और रूट ऑप्टिमाइजेशन टूल",
             ev_charging_infrastructure_and_electric_vehicle_solutions: "ईवी चार्जिंग इंफ्रास्ट्रक्चर और इलेक्ट्रिक वाहन समाधान",
             mobile_device_integration_and_communications_equipment: "मोबाइल डिवाइस एकीकरण और संचार उपकरण",
-            asset_recovery_and_anti_theft_technologies: "संपत्ति की वसूली और चोरी विरोधी तकनीक"
+            asset_recovery_and_anti_theft_technologies: "संपत्ति की वसूली और चोरी विरोधी तकनीक",
+            vinyl_vehicle_wrapping_services: "विनाइल वाहन रैपिंग सेवाएं"
         },
         formats: {
             leaderboard: "लीडरबोर्ड (728x90)",
@@ -596,7 +602,8 @@ export const translations = {
             gps_navigation_and_route_optimisation_tools: "เครื่องมือระบบนำทาง GPS และการปรับเส้นทาง",
             ev_charging_infrastructure_and_electric_vehicle_solutions: "โครงสร้างพื้นฐานการชาร์จ EV และโซลูชั่นรถยนต์ไฟฟ้า",
             mobile_device_integration_and_communications_equipment: "การรวมอุปกรณ์เคลื่อนที่และอุปกรณ์สื่อสาร",
-            asset_recovery_and_anti_theft_technologies: "เทคโนโลยีการติดตามทรัพย์สินและการป้องกันการโจรกรรม"
+            asset_recovery_and_anti_theft_technologies: "เทคโนโลยีการติดตามทรัพย์สินและการป้องกันการโจรกรรม",
+            vinyl_vehicle_wrapping_services: "บริการหุ้มรถด้วยฟิล์มไวนิล"
         },
         formats: {
             leaderboard: "Leaderboard (728x90)",
@@ -814,7 +821,8 @@ export const translations = {
             gps_navigation_and_route_optimisation_tools: "Công cụ Điều hướng GPS và Tối ưu hóa Tuyến đường",
             ev_charging_infrastructure_and_electric_vehicle_solutions: "Hạ tầng Sạc EV và Giải pháp Xe điện",
             mobile_device_integration_and_communications_equipment: "Tích hợp Thiết bị Di động và Thiết bị Truyền thông",
-            asset_recovery_and_anti_theft_technologies: "Công nghệ Thu hồi Tài sản và Chống trộm"
+            asset_recovery_and_anti_theft_technologies: "Công nghệ Thu hồi Tài sản và Chống trộm",
+            vinyl_vehicle_wrapping_services: "Dịch vụ dán decal xe (Vinyl)"
         },
         formats: {
             leaderboard: "Leaderboard (728x90)",
@@ -1690,7 +1698,8 @@ export const translations = {
             gps_navigation_and_route_optimisation_tools: "GPS-Navigations- und Routenoptimierungs-Tools",
             ev_charging_infrastructure_and_electric_vehicle_solutions: "EV-Ladeinfrastruktur und Elektrofahrzeuglösungen",
             mobile_device_integration_and_communications_equipment: "Mobilgeräteintegration und Kommunikationsausrüstung",
-            asset_recovery_and_anti_theft_technologies: "Technologien zur Wiederbeschaffung und Diebstahlschutz"
+            asset_recovery_and_anti_theft_technologies: "Technologien zur Wiederbeschaffung und Diebstahlschutz",
+            vinyl_vehicle_wrapping_services: "Vinyl Fahrzeugfolierung"
         },
         formats: {
             leaderboard: "Leaderboard (728x90)",
@@ -1908,8 +1917,9 @@ export const translations = {
             roadside_assistance_programs: "Programas de Asistencia en Carretera",
             gps_navigation_and_route_optimisation_tools: "Herramientas de Navegación GPS y Optimización de Rutas",
             ev_charging_infrastructure_and_electric_vehicle_solutions: "Infraestructura de Carga EV y Soluciones para Vehículos Eléctricos",
-            mobile_device_integration_and_communications_equipment: "Integración de Dispositivos Móviles y Equipos de Comunicaciones",
-            asset_recovery_and_anti_theft_technologies: "Tecnologías de Recuperación de Activos y Antirrobo"
+            mobile_device_integration_and_communications_equipment: "Integración de Dispositivos Móviles y Equipo de Comunicaciones",
+            asset_recovery_and_anti_theft_technologies: "Tecnologías de Recuperación de Activos y Antirrobo",
+            vinyl_vehicle_wrapping_services: "Servicios de rotulación de vehículos con vinilo"
         },
         formats: {
             leaderboard: "Leaderboard (728x90)",

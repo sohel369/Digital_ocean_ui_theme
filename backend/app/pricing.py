@@ -112,7 +112,14 @@ class PricingEngine:
         # Use database multiplier, but allow for override logic here for specific industry types
         industry_multiplier = self._get_specific_industry_multiplier(industry_type, pricing_matrix.multiplier)
         
-        monthly_gross = base_rate * industry_multiplier * coverage_multiplier
+        # Determine Platform 2 Ad Format Multiplier
+        ad_format_multiplier = 1.0
+        from .platform2_categories import PLATFORM2_CATEGORY_MULTIPLIERS
+        from .platform2_ad_formats import AD_FORMAT_MULTIPLIERS
+        if industry_type in PLATFORM2_CATEGORY_MULTIPLIERS:
+            ad_format_multiplier = AD_FORMAT_MULTIPLIERS.get(advert_type, 1.0)
+        
+        monthly_gross = base_rate * industry_multiplier * coverage_multiplier * ad_format_multiplier
         
         # 4. Calculate estimated reach
         estimated_reach = self._calculate_reach(
@@ -230,8 +237,12 @@ class PricingEngine:
         """
         Industry-specific pricing logic.
         Delegates to industry_config module for a single source of truth.
-        DB multipliers (default_multiplier) are used as final fallback.
+        Now also supports Platform 2.0 categories.
         """
+        from .platform2_categories import PLATFORM2_CATEGORY_MULTIPLIERS
+        if industry_type in PLATFORM2_CATEGORY_MULTIPLIERS:
+            return PLATFORM2_CATEGORY_MULTIPLIERS[industry_type]
+
         from .industry_config import get_industry_multiplier
         return get_industry_multiplier(industry_type, default_multiplier)
     

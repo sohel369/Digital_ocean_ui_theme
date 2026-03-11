@@ -13,7 +13,8 @@ import {
     ShieldAlert,
     Shield,
     HelpCircle,
-    Users
+    Users,
+    LayoutGrid
 } from 'lucide-react';
 import { Globe } from 'lucide-react';
 import { useApp } from '../context/AppContext';
@@ -30,6 +31,7 @@ const Sidebar = () => {
 
     const advertiserNavItems = [
         { to: "/", icon: LayoutDashboard, label: t('sidebar.dashboard') },
+        { to: "/platform2/categories", icon: LayoutDashboard, label: "Platform 2.0 " },
         { to: "/campaigns/new", icon: PlusCircle, label: t('sidebar.new_campaign') },
         { to: "/geo-targeting", icon: Map, label: t('sidebar.geo_targeting') },
         { to: "/pricing", icon: CreditCard, label: t('sidebar.pricing') },
@@ -39,6 +41,7 @@ const Sidebar = () => {
 
     const adminNavItems = [
         { to: "/", icon: LayoutDashboard, label: 'Admin Dashboard' },
+        { to: "/platform2/categories", icon: LayoutDashboard, label: "Platform 2.0 Hub" },
         { to: "/admin/campaigns", icon: Shield, label: 'Campaign Approvals' },
         { to: "/admin/pricing", icon: Settings, label: t('sidebar.admin_pricing') },
         { to: "/admin/users", icon: Users, label: 'User Directory' },
@@ -107,7 +110,14 @@ const Sidebar = () => {
                                 return isActive ? activeClass : inactiveClass;
                             }}
                         >
-                            <item.icon size={22} className={(user?.role?.toLowerCase() === 'admin' || user?.role?.toLowerCase() === 'country_admin') && item.to !== '/' ? 'text-amber-500' : (item.to === '/geo-targeting' ? 'text-blue-400' : '')} />
+                            <item.icon
+                                size={22}
+                                className={`
+                                    ${(user?.role?.toLowerCase() === 'admin' || user?.role?.toLowerCase() === 'country_admin') && item.to !== '/' ? 'text-amber-500' : ''}
+                                    ${item.to === '/geo-targeting' ? 'text-blue-400' : ''}
+                                    ${item.to === '/platform2/categories' ? 'text-primary-light' : ''}
+                                `}
+                            />
                             {item.label}
                         </NavLink>
                     ))}
