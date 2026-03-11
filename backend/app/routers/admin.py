@@ -15,6 +15,76 @@ from .. import models, schemas, auth
 router = APIRouter(prefix="/admin", tags=["Admin"])
 
 
+@router.get("/fix-db")
+async def fix_database_schema(
+    current_user: models.User = Depends(auth.get_current_admin_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Emergency utility to add missing columns to the database.
+    Useful when deployment happens without full migrations.
+    """
+    from sqlalchemy import text
+    
+    # List of common missing columns found in production logs
+    # Format: (table_name, column_name, type_definition)
+    essential_columns = [
+        ("users", "industry", "VARCHAR(255)"),
+        ("users", "industry_type", "VARCHAR(100)"),
+        ("users", "managed_country", "VARCHAR(10)"),
+        ("users", "cookie_consent", "BOOLEAN DEFAULT FALSE"),
+        ("campaigns", "industry_type", "VARCHAR(100)"),
+        ("invoices", "country", "VARCHAR(100)"),
+        ("invoices", "tax_rate", "FLOAT DEFAULT 0.0"),
+        ("invoices", "tax_amount", "FLOAT DEFAULT 0.0"),
+        ("geodata", "radius_areas_count", "INTEGER DEFAULT 1"),
+        ("geodata", "density_multiplier", "FLOAT DEFAULT 1.0"),
+        ("geodata", "tax_rate", "FLOAT DEFAULT 0.0"),
+    ]
+    
+    results = []
+    
+    # Check if we are using Postgres or SQLite
+    database_url = str(db.get_bind().url)
+    is_sqlite = "sqlite" in database_url.lower()
+    
+    for table, col, col_type in essential_columns:
+        try:
+            # Check if column exists
+            if is_sqlite:
+                check_query = text(f"PRAGMA table_info({table})")
+                res = db.execute(check_query).fetchall()
+                exists = any(row[1] == col for row in res)
+            else:
+                # Postgres check
+                check_query = text(f"""
+                    SELECT column_name 
+                    FROM information_schema.columns 
+                    WHERE table_name='{table}' AND column_name='{col}'
+                """)
+                res = db.execute(check_query).fetchone()
+                exists = res is not None
+            
+            if not exists:
+                logger.info(f"🔧 Adding missing column {table}.{col}...")
+                db.execute(text(f"ALTER TABLE {table} ADD COLUMN {col} {col_type}"))
+                db.commit()
+                results.append(f"✅ Added {table}.{col}")
+            else:
+                results.append(f"ℹ️ {table}.{col} already exists")
+                
+        except Exception as e:
+            db.rollback()
+            logger.error(f"❌ Error fixing {table}.{col}: {str(e)}")
+            results.append(f"❌ Error {table}.{col}: {str(e)}")
+
+    return {
+        "status": "Migration attempt complete",
+        "database": "PostgreSQL" if not is_sqlite else "SQLite",
+        "results": results
+    }
+
+
 # ==================== User Management ====================
 
 @router.get("/users", response_model=List[schemas.UserResponse])
